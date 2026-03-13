@@ -325,7 +325,8 @@
       display: flex;
       align-items: center;
       gap: 11px;
-      justify-self: center;
+      justify-self: start;
+      padding-left: 20px;
     }
 
     .proto-logo {
@@ -1046,20 +1047,32 @@
       }
 
       .header-socials {
-        position: relative !important;
-        right: auto !important;
-        top: auto !important;
-        margin-top: 15px !important;
-        justify-content: center !important;
-        width: 100% !important;
-        z-index: 10 !important;
+        position: absolute !important;
+        right: 12px !important;
+        top: 12px !important;
+        margin-top: 0 !important;
+        justify-content: flex-end !important;
+        width: auto !important;
+        z-index: 110 !important;
+        gap: 8px !important;
+      }
+
+      .social-link {
+        width: 28px !important;
+        height: 28px !important;
       }
 
       .cfg-btn {
-        position: absolute !important;
-        left: 16px !important;
-        top: 12px !important;
-        z-index: 20 !important;
+        position: static !important;
+        padding: 0 !important;
+        background: none !important;
+        border: none !important;
+        font-size: 16px !important;
+        margin-right: 4px !important;
+      }
+
+      .cfg-btn span {
+        display: none !important;
       }
 
       .container {
@@ -1073,8 +1086,8 @@
         flex-wrap: nowrap !important;
         justify-content: center !important;
         gap: 6px !important;
-        font-size: 9px !important;
-        padding: 10px 8px !important;
+        font-size: 10px !important;
+        padding: 8px 12px !important;
       }
 
       .formula-text {
@@ -1104,7 +1117,15 @@
 
       .proto-info {
         width: 100% !important;
-        margin-bottom: 18px !important;
+        margin-bottom: 20px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+      }
+
+      .proto-name {
+        font-size: 18px !important;
       }
 
       .inp-group {
@@ -1148,9 +1169,13 @@
       }
 
       .expand-btn {
+        display: flex !important;
         position: absolute !important;
         top: 16px !important;
         right: 16px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 5 !important;
       }
     }
   </style>
@@ -1158,9 +1183,7 @@
 
 <body>
 
-  <!-- HEADER -->
   <header class="header">
-    <button class="cfg-btn" onclick="openConfig()">⚙ <span>Default Options</span></button>
     <div class="header-inner">
       <div class="hive-hex">
         <img
@@ -1169,10 +1192,10 @@
       </div>
       <div class="header-text-stack">
         <div class="user-branding">BeCryptoBee <span
-            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.6</span>
+            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.7</span>
         </div>
         <div class="header-title">
-          Perps <span>Point Cost</span> Calculator
+          Perps Point Cost Calculator
         </div>
       </div>
     </div>
@@ -1192,8 +1215,8 @@
     </div>
   </header>
 
-  <!-- FORMULA BAR -->
   <div class="formula-bar">
+    <button class="cfg-btn" onclick="openConfig()">⚙ <span>Default Options</span></button>
     <div class="formula-label">📐 Formula</div>
     <div class="formula-text">$ / point = <b>(FDV × Allocation%)</b> ÷ <b>Total Points</b></div>
   </div>
