@@ -1,0 +1,1817 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perps Calc</title>
+  <link rel="icon" type="image/png"
+    href="https://images.vexels.com/media/users/3/235199/isolated/preview/2c46a957f757358d387baf0671701af5-flying-color-stroke-honey-bee.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base: #0d0f14;
+      --bg-card: #13161f;
+      --bg-input: #1a1e2a;
+      --bg-hover: #1e2330;
+      --border: #252a38;
+      --border-acc: #2e3548;
+      --accent: #f5c518;
+      --accent2: #ff9d00;
+      --green: #39d98a;
+      --red: #ff4f4f;
+      --blue: #4f8fff;
+      --purple: #a855f7;
+      --text: #f1f3fa;
+      --muted: #9ca3af;
+      --radius: 14px;
+      --radius-sm: 8px;
+
+      /* Tier colors */
+      --tier1: #f5c518;
+      --tier2: #4f8fff;
+      --tier3: #6b7280;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-base);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 60px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      background: #0f1219;
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 80px;
+      /* Increased height for two-line layout */
+      display: flex;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .header-inner {
+      display: flex;
+      flex-direction: row;
+      /* Row to have logo beside text */
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+      flex: 1;
+      gap: 16px;
+    }
+
+    .header-text-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .user-branding {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      margin-bottom: -2px;
+      text-transform: none;
+      line-height: 1.1;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .header-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.1;
+    }
+
+    .hive-hex {
+      width: 44px;
+      height: 48px;
+      background: var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 6px;
+    }
+
+    .hive-hex img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Social Links in Header */
+    .header-socials {
+      position: absolute;
+      right: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .social-link {
+      width: 32px;
+      height: 32px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .social-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .social-link svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* ─── RESPONSIVE STYLES ─── */
+    @media (max-width: 992px) {
+
+      .table-head,
+      .perp-main {
+        grid-template-columns: 200px 1fr 1fr 1fr 120px 44px;
+      }
+    }
+
+    /* Mobile Breakpoint Refined */
+    @media (max-width: 768px) {
+      .header {
+        position: relative !important;
+        height: auto;
+        padding: 12px 16px;
+      }
+
+      .header-inner {
+        flex-direction: row !important;
+        gap: 12px;
+        padding-top: 34px;
+        justify-content: flex-start !important;
+        align-items: center !important;
+      }
+
+      .header-text-stack {
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .hive-hex {
+        width: 48px;
+        height: 52px;
+        padding: 4px;
+      }
+
+      .user-branding {
+        font-size: 24px;
+        text-align: left !important;
+      }
+
+      .header-title {
+        font-size: 13px;
+        justify-content: flex-start !important;
+      }
+
+      .cfg-btn {
+        left: 16px;
+        top: 12px;
+        z-index: 110;
+      }
+
+      .cfg-btn span {
+        display: none;
+      }
+
+      .header-socials {
+        right: 16px;
+        top: 12px;
+        z-index: 110;
+        position: absolute;
+      }
+
+      .container {
+        padding: 16px 10px;
+      }
+
+      .formula-bar {
+        padding: 10px 16px;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .table-head {
+        display: none;
+      }
+
+      .perp-main {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding: 20px 16px;
+        align-items: stretch;
+        height: auto;
+        min-height: 0;
+      }
+
+      .proto-info {
+        width: 100%;
+        justify-content: flex-start;
+        /* Remove big gap */
+        gap: 12px;
+        padding-right: 48px;
+        /* Room for expand button */
+      }
+
+      .proto-logo {
+        width: 44px;
+        height: 44px;
+      }
+
+      .inp-group {
+        width: 100%;
+        margin-bottom: 2px;
+      }
+
+      .num-input {
+        width: 80px;
+      }
+
+      .price-cell {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+      }
+
+      .price-big {
+        font-size: 28px;
+      }
+
+      .expand-btn {
+        position: absolute;
+        top: 20px;
+        right: 16px;
+        z-index: 10;
+      }
+
+      .perp-row {
+        position: relative;
+        height: auto !important;
+      }
+
+      .perp-details {
+        padding: 18px 16px;
+      }
+
+      .details-chips {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .d-chip {
+        min-width: 0;
+        padding: 8px 10px;
+      }
+
+      .d-chip:last-child {
+        grid-column: span 2;
+      }
+
+      /* Modal Mobile */
+      .cfg-modal {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+      }
+
+      .cfg-body {
+        padding: 12px;
+      }
+
+      .cfg-table th:nth-child(3),
+      .cfg-table td:nth-child(3),
+      .cfg-table th:nth-child(4),
+      .cfg-table td:nth-child(4) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .user-branding {
+        font-size: 20px;
+      }
+
+      .header-title span {
+        display: none;
+      }
+    }
+
+    /* ─── FORMULA BAR ─── */
+    .formula-bar {
+      background: #0f1219;
+      border-bottom: 1px solid var(--border);
+      padding: 8px 32px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+
+    .formula-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      flex-shrink: 0;
+    }
+
+    .formula-text {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .formula-text b {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .formula-note {
+      margin-left: auto;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .formula-note b {
+      color: var(--accent);
+    }
+
+    /* ─── MAIN ─── */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 24px;
+    }
+
+    /* ─── TIER HEADER ─── */
+    .tier-section {
+      margin-bottom: 36px;
+    }
+
+    .tier-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .tier-pill {
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .tier1 .tier-pill {
+      background: rgba(245, 197, 24, 0.12);
+      color: var(--tier1);
+      border: 1px solid rgba(245, 197, 24, 0.25);
+    }
+
+    .tier2 .tier-pill {
+      background: rgba(79, 143, 255, 0.12);
+      color: var(--tier2);
+      border: 1px solid rgba(79, 143, 255, 0.25);
+    }
+
+    .tier3 .tier-pill {
+      background: rgba(107, 114, 128, 0.12);
+      color: var(--tier3);
+      border: 1px solid rgba(107, 114, 128, 0.25);
+    }
+
+    .tier-desc {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .tier-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── TABLE COLUMNS HEADER ─── */
+    .table-head {
+      display: grid;
+      grid-template-columns: 240px 1fr 1fr 1fr 140px 44px;
+      gap: 12px;
+      padding: 0 18px 8px 18px;
+    }
+
+    .th {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .th.right {
+      text-align: right;
+    }
+
+    /* ─── PERP ROW ─── */
+    .perp-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+    }
+
+    .perp-row:hover {
+      border-color: var(--border-acc);
+      box-shadow: 0 4px 28px rgba(0, 0, 0, 0.32);
+      transform: translateY(-1px);
+    }
+
+    /* left accent bar by tier */
+    .perp-row.t1 {
+      border-left: 3px solid rgba(245, 197, 24, 0.4);
+    }
+
+    .perp-row.t2 {
+      border-left: 3px solid rgba(79, 143, 255, 0.4);
+    }
+
+    .perp-row.t3 {
+      border-left: 3px solid rgba(107, 114, 128, 0.3);
+    }
+
+    .perp-main {
+      display: grid;
+      grid-template-columns: 240px 1fr 1fr 1fr 140px 44px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 18px;
+      cursor: pointer;
+    }
+
+    /* Protocol info */
+    .proto-info {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .proto-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .proto-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .proto-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .proto-stage {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    .st-active {
+      background: rgba(57, 217, 138, 0.10);
+      color: var(--green);
+      border: 1px solid rgba(57, 217, 138, 0.2);
+    }
+
+    .st-boost {
+      background: rgba(255, 157, 0, 0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(255, 157, 0, 0.25);
+    }
+
+    .st-final {
+      background: rgba(79, 143, 255, 0.10);
+      color: var(--blue);
+      border: 1px solid rgba(79, 143, 255, 0.2);
+    }
+
+    .st-capped {
+      background: rgba(255, 79, 79, 0.10);
+      color: var(--red);
+      border: 1px solid rgba(255, 79, 79, 0.2);
+    }
+
+    /* ─── INPUT GROUP ─── */
+    .inp-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .inp-label {
+      font-size: 9.5px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .inp-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    /* Custom range slider */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: 1;
+      height: 3px;
+      border-radius: 4px;
+      background: var(--bg-input);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg-card);
+      box-shadow: 0 0 5px rgba(245, 197, 24, 0.35);
+      transition: box-shadow 0.15s, transform 0.1s;
+    }
+
+    input[type="range"]:hover::-webkit-slider-thumb {
+      box-shadow: 0 0 10px rgba(245, 197, 24, 0.6);
+      transform: scale(1.15);
+    }
+
+    input[type="range"]:active::-webkit-slider-thumb {
+      transform: scale(1.25);
+    }
+
+    /* Styled number input — no spin arrows */
+    .num-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      width: 72px;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .num-input::-webkit-outer-spin-button,
+    .num-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+
+    .num-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.12);
+    }
+
+    .inp-unit {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    /* ─── PRICE CELL ─── */
+    .price-cell {
+      text-align: right;
+    }
+
+    .price-big {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .price-small {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0.4;
+        transform: scale(0.93);
+      }
+
+      60% {
+        transform: scale(1.04);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .price-pop {
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* ─── EXPAND BUTTON ─── */
+    .expand-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: all 0.2s;
+      justify-self: end;
+    }
+
+    .expand-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(245, 197, 24, 0.06);
+    }
+
+    .expand-btn.open {
+      transform: rotate(180deg);
+      border-color: rgba(245, 197, 24, 0.5);
+      color: var(--accent);
+    }
+
+    /* ─── DETAILS PANEL ─── */
+    .perp-details {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 16px 18px 18px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .perp-details.open {
+      display: block;
+      animation: slideDown 0.22s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .details-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .d-chip {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 13px;
+      min-width: 110px;
+    }
+
+    .d-chip-label {
+      font-size: 9.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .d-chip-val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .d-chip-val.accent {
+      color: var(--accent);
+    }
+
+    .conditions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .cond-tag {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 11px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .cond-tag::before {
+      content: '›  ';
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .live-formula {
+      background: #0b0d11;
+      border: 1px dashed var(--border-acc);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .live-formula .fv {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .row-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 11px;
+    }
+
+    .reset-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      padding: 4px 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    .ref-tag {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ref-tag span {
+      color: var(--accent);
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align: center;
+      padding: 28px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .footer b {
+      color: var(--accent);
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-acc);
+      border-radius: 3px;
+    }
+
+    /* ─── CONFIG BUTTON ─── */
+    .cfg-btn {
+      position: absolute;
+      left: 32px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+
+    .cfg-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(245, 197, 24, 0.06);
+    }
+
+    /* ─── CONFIG MODAL ─── */
+    .cfg-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 200;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 60px;
+    }
+
+    .cfg-overlay.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .cfg-modal {
+      background: #13161f;
+      border: 1px solid var(--border-acc);
+      border-radius: var(--radius);
+      width: 820px;
+      max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 80px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    .cfg-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .cfg-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .cfg-title span {
+      color: var(--accent);
+    }
+
+    .cfg-close {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .cfg-close:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .cfg-body {
+      overflow-y: auto;
+      padding: 16px 20px;
+      flex: 1;
+    }
+
+    .cfg-note {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding: 8px 12px;
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+    }
+
+    .cfg-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cfg-table thead tr {
+      border-bottom: 1px solid var(--border-acc);
+    }
+
+    .cfg-table th {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .cfg-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .cfg-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .cfg-proto-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .cfg-tier-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 5px;
+      text-transform: uppercase;
+    }
+
+    .tag-t1 {
+      background: rgba(245, 197, 24, 0.12);
+      color: var(--accent);
+    }
+
+    .tag-t2 {
+      background: rgba(79, 143, 255, 0.12);
+      color: var(--blue);
+    }
+
+    .tag-t3 {
+      background: rgba(107, 114, 128, 0.12);
+      color: var(--muted);
+    }
+
+    .cfg-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      width: 90px;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .cfg-input::-webkit-outer-spin-button,
+    .cfg-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .cfg-input:focus {
+      border-color: var(--accent);
+    }
+
+    .cfg-unit {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    /* computed price preview */
+    .cfg-price-preview {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      text-align: right;
+      min-width: 80px;
+    }
+
+    .cfg-foot {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .cfg-apply {
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #0d0f14;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .cfg-apply:hover {
+      opacity: 0.88;
+    }
+
+    .cfg-reset-all {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cfg-reset-all:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .cfg-saved-msg {
+      font-size: 11px;
+      color: var(--green);
+      margin-left: auto;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .cfg-saved-msg.show {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <button class="cfg-btn" onclick="openConfig()">⚙ <span>Default Options</span></button>
+    <div class="header-inner">
+      <div class="hive-hex">
+        <img
+          src="https://images.vexels.com/media/users/3/235199/isolated/preview/2c46a957f757358d387baf0671701af5-flying-color-stroke-honey-bee.png"
+          alt="Bee" />
+      </div>
+      <div class="header-text-stack">
+        <div class="user-branding">BeCryptoBee</div>
+        <div class="header-title">
+          Perps <span>Point Cost</span> Calculator
+        </div>
+      </div>
+    </div>
+    <div class="header-socials">
+      <a href="https://t.me/BeCryptoBee" target="_blank" class="social-link" title="Telegram">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M11.944 0C5.352 0 0 5.352 0 11.944c0 6.592 5.352 11.944 11.944 11.944 6.592 0 11.944-5.352 11.944-11.944C23.888 5.352 18.536 0 11.944 0zm5.832 8.356c-.164 1.724-1.144 7.544-1.64 10.196-.208 1.12-.616 1.492-1.016 1.528-.868.08-1.528-.572-2.368-1.124-1.316-.864-2.06-1.396-3.332-2.236-1.472-.968-.516-1.5.32-2.368.216-.228 4.028-3.692 4.104-3.996.008-.036.012-.172-.072-.244-.084-.072-.204-.048-.292-.028-.124.028-2.112 1.344-5.952 3.936-.564.388-1.076.58-1.536.568-.508-.012-1.484-.288-2.212-.524-.892-.288-1.604-.444-1.54-.936.032-.256.384-.516 1.056-.784 4.128-1.792 6.876-2.976 8.244-3.552 3.924-1.644 4.74-1.932 5.272-1.94.116-.004.376.024.544.164.14.116.18.272.196.388.016.128.02.404.004.604z" />
+        </svg>
+      </a>
+      <a href="https://x.com/MashuraArtem" target="_blank" class="social-link" title="Twitter / X">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- FORMULA BAR -->
+  <div class="formula-bar">
+    <div class="formula-label">📐 Formula</div>
+    <div class="formula-text">$ / point = <b>(FDV × Allocation%)</b> ÷ <b>Total Points</b></div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="container">
+    <div id="perps-root"></div>
+  </div>
+
+  <div class="footer">
+    ⚠️ All figures are estimates based on projected FDV and assumed community allocations. <b>Not financial advice.</b>
+    Do your own research.
+  </div>
+
+  <!-- CONFIG MODAL -->
+  <div class="cfg-overlay" id="cfg-overlay" onclick="if(event.target===this)closeConfig()">
+    <div class="cfg-modal">
+      <div class="cfg-head">
+        <div class="cfg-title">⚙ Default <span>Values</span> Config</div>
+        <button class="cfg-close" onclick="closeConfig()">✕</button>
+      </div>
+      <div class="cfg-body">
+        <div class="cfg-note">Edit the default values for each protocol. Click <b>Apply & Save</b> to persist to
+          localStorage — they will reload automatically next time.</div>
+        <table class="cfg-table">
+          <thead>
+            <tr>
+              <th>Protocol</th>
+              <th>FDV ($M)</th>
+              <th>Alloc (%)</th>
+              <th>Points (M)</th>
+              <th style="text-align:right">$ / point preview</th>
+            </tr>
+          </thead>
+          <tbody id="cfg-tbody"></tbody>
+        </table>
+      </div>
+      <div class="cfg-foot">
+        <button class="cfg-apply" onclick="applyConfig()">✓ Apply &amp; Save</button>
+        <button class="cfg-reset-all" onclick="hardResetConfig()">↺ Reset all to coded defaults</button>
+        <span class="cfg-saved-msg" id="cfg-saved-msg">✓ Saved!</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── DATA ────────────────────────────────────────────────────────────────
+    const TIERS = [
+      {
+        id: 't1',
+        label: 'Tier 1',
+        desc: 'High conviction — stronger fundamentals & traction',
+        ids: ['variational', 'edgex', 'nado'],
+      },
+      {
+        id: 't2',
+        label: 'Tier 2',
+        desc: 'Solid projects with good risk/reward',
+        ids: ['ethereal', 'extended', 'grvt', 'o1exchange'],
+      },
+      {
+        id: 't3',
+        label: 'Tier 3',
+        desc: 'Speculative or cap-reached — monitor only',
+        ids: ['pacifica', 'ostium', 'hibachi'],
+      },
+    ];
+
+    const PERPS = {
+      variational: {
+        name: 'Variational',
+        stage: 'PERP DEX · OMNI',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=variational.io&sz=64',
+        fb: 'VR',
+        fdv: 300, alloc: 20, points: 9.5,
+        ptsMax: 50, ptsStep: 0.1,
+        remaining: 'Until Q3 2026',
+        conditions: ['~9.5M total points', '3M retroactive allocation', '~150,000 pts / week', 'Program runs until Q3 2026'],
+        ref: null,
+      },
+      edgex: {
+        name: 'EdgeX',
+        stage: 'PERP DEX · PRO',
+        status: 'final', statusLabel: 'Final Stretch',
+        logo: 'https://www.google.com/s2/favicons?domain=edgex.exchange&sz=64',
+        fb: 'EX',
+        fdv: 600, alloc: 10, points: 8,
+        ptsMax: 40, ptsStep: 0.5,
+        remaining: 'Final stretch before TGE',
+        conditions: ['~8M total points', '7.3M distributed in Season 1', '~250k–300k pts / week pre-TGE', 'Pro-trader focus'],
+        ref: null,
+      },
+      nado: {
+        name: 'Nado',
+        stage: 'PERP DEX · SEASON 1',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://pbs.twimg.com/profile_images/2010908038514032641/5E7RkPLF_400x400.jpg',
+        fb: 'NA',
+        fdv: 1500, alloc: 10, points: 30,
+        ptsMax: 100, ptsStep: 0.5,
+        remaining: 'Growth Stage',
+        conditions: ['~30M total points', '950k–1M pts / week', 'Season 1 + bonus pool', 'Active distribution ongoing'],
+        ref: 'JOIN',
+      },
+      ethereal: {
+        name: 'Ethereal',
+        stage: 'PERP DEX · EVM',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=ethereal.trade&sz=64',
+        fb: 'ET',
+        fdv: 100, alloc: 20, points: 6500,
+        ptsMax: 20000, ptsStep: 100,
+        remaining: 'No cap announced',
+        conditions: ['~6,500M total points (6.5B)', '~200M pts / week since Cycle 10', 'No distribution limit set', 'EVM-compatible'],
+        ref: 'JOIN',
+      },
+      extended: {
+        name: 'Extended',
+        stage: 'PERP DEX · SEASON 1',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=extended.exchange&sz=64',
+        fb: 'EX',
+        fdv: 200, alloc: 25, points: 50,
+        ptsMax: 200, ptsStep: 1,
+        remaining: '~8–9 month full run',
+        conditions: ['~50M total points expected', '1.2M pts / week (Season 1 ongoing)', 'Early allocation: 4.3M', 'Estimated 8–9 month full run'],
+        ref: 'JOIN',
+      },
+      grvt: {
+        name: 'GRVT',
+        stage: 'PERP DEX · HYBRID',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=grvt.io&sz=64',
+        fb: 'GR',
+        fdv: 150, alloc: 28, points: 5,
+        ptsMax: 30, ptsStep: 0.1,
+        remaining: 'Cap expected at TGE',
+        conditions: ['~5M total points', '100k–150k pts / week', 'Cap expected at TGE'],
+        ref: 'KOVPKD2',
+      },
+      o1exchange: {
+        name: 'O1 Exchange',
+        stage: 'PERP DEX · MULTI-PHASE',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://pbs.twimg.com/profile_images/1553029460236337152/QjHF5aPb_400x400.jpg',
+        fb: 'O1',
+        fdv: 150, alloc: 10, points: 40,
+        ptsMax: 150, ptsStep: 1,
+        remaining: 'Ongoing Phases',
+        conditions: ['40M total points confirmed', 'Phased release model', 'Distributed across all phases', 'Ongoing phases active'],
+        ref: null,
+      },
+      pacifica: {
+        name: 'Pacifica',
+        stage: 'PERP DEX · OMNI',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=pacifica.fi&sz=64',
+        fb: 'PA',
+        fdv: 100, alloc: 15, points: 300,
+        ptsMax: 1000, ptsStep: 10,
+        remaining: 'High Velocity',
+        conditions: ['~300M total points', '10M pts / week ongoing', 'Accumulated >213M already', 'High velocity accumulation'],
+        ref: null,
+      },
+      ostium: {
+        name: 'Ostium',
+        stage: 'PERP DEX · RWA',
+        status: 'capped', statusLabel: 'Cap Reached',
+        logo: 'https://www.google.com/s2/favicons?domain=ostium.io&sz=64',
+        fb: 'OS',
+        fdv: 200, alloc: 15, points: 35,
+        ptsMax: 100, ptsStep: 0.5,
+        remaining: '⛔ S2 Hard Cap Reached',
+        conditions: ['35M S2 hard cap — REACHED', 'No expansion planned', 'RWA focus: SPX/USD pairs', 'Season 2 closed'],
+        ref: null,
+      },
+      hibachi: {
+        name: 'Hibachi',
+        stage: 'PERP DEX · MAD MARCH',
+        status: 'boost', statusLabel: '🔥 Mad March',
+        logo: 'https://www.google.com/s2/favicons?domain=hibachi.xyz&sz=64',
+        fb: 'HI',
+        fdv: 100, alloc: 15, points: 52,
+        ptsMax: 150, ptsStep: 1,
+        remaining: '',
+        conditions: [],
+        ref: null,
+      },
+    };
+
+    // ─── STATE ───────────────────────────────────────────────────────────────
+    let state = {};
+    function initState() {
+      state = {};
+      Object.keys(PERPS).forEach(id => {
+        const p = PERPS[id];
+        state[id] = { fdv: p.fdv, alloc: p.alloc, points: p.points };
+      });
+    }
+
+    // ─── HELPERS ─────────────────────────────────────────────────────────────
+    function calcPrice(id) {
+      const s = state[id];
+      const pts = s.points * 1_000_000;
+      if (!pts) return 0;
+      return (s.fdv * 1_000_000 * s.alloc / 100) / pts;
+    }
+    function fmtPrice(v) {
+      if (v === 0) return '$0.00';
+      if (v >= 1) return '$' + v.toFixed(2);
+
+      // For < $1, show 2 significant digits
+      return '$' + Number(v.toPrecision(2)).toString();
+    }
+    function fmtPts(v) {
+      if (v >= 1000) return (v / 1000).toFixed(1) + 'B';
+      return v % 1 === 0 ? v + 'M' : parseFloat(v).toFixed(1) + 'M';
+    }
+    function stClass(s) {
+      return { active: 'st-active', boost: 'st-boost', final: 'st-final', capped: 'st-capped' }[s] || 'st-active';
+    }
+    function tierClass(tid) {
+      return { t1: 't1', t2: 't2', t3: 't3' }[tid] || 't3';
+    }
+
+    // ─── RENDER ──────────────────────────────────────────────────────────────
+    function renderPerp(id, tid) {
+      const p = PERPS[id];
+      const s = state[id];
+      const price = calcPrice(id);
+      const tc = tierClass(tid);
+
+      return `
+  <div class="perp-row ${tc}" id="row-${id}">
+    <div class="perp-main" onclick="toggleDetails('${id}')">
+
+      <div class="proto-info">
+        <div class="proto-logo" id="logo-${id}">
+          <img src="${p.logo}" alt="${p.name}"
+            onerror="this.parentElement.innerHTML='${p.fb}'" />
+        </div>
+        <div>
+          <div class="proto-name">
+            ${p.name}<span class="status-badge ${stClass(p.status)}">${p.statusLabel}</span>
+          </div>
+          <div class="proto-stage">${p.stage}</div>
+        </div>
+      </div>
+
+      <!-- FDV -->
+      <div class="inp-group" onclick="event.stopPropagation()">
+        <div class="inp-label">FDV</div>
+        <div class="inp-row">
+          <input type="range" id="fdv-r-${id}" min="10" max="3000" step="10" value="${s.fdv}"
+            oninput="onFdv('${id}',this.value)" />
+          <input type="number" id="fdv-n-${id}" class="num-input" value="${s.fdv}"
+            inputmode="decimal" oninput="onFdv('${id}',this.value)" />
+          <span class="inp-unit">$M</span>
+        </div>
+      </div>
+
+      <!-- Alloc -->
+      <div class="inp-group" onclick="event.stopPropagation()">
+        <div class="inp-label">Allocation</div>
+        <div class="inp-row">
+          <input type="range" id="alc-r-${id}" min="1" max="80" step="0.5" value="${s.alloc}"
+            oninput="onAlc('${id}',this.value)" />
+          <input type="number" id="alc-n-${id}" class="num-input" value="${s.alloc}" style="width:60px"
+            inputmode="decimal" oninput="onAlc('${id}',this.value)" />
+          <span class="inp-unit">%</span>
+        </div>
+      </div>
+
+      <!-- Points -->
+      <div class="inp-group" onclick="event.stopPropagation()">
+        <div class="inp-label">Total Points</div>
+        <div class="inp-row">
+          <input type="range" id="pts-r-${id}" min="0.1" max="${p.ptsMax}" step="${p.ptsStep}" value="${s.points}"
+            oninput="onPts('${id}',this.value)" />
+          <input type="number" id="pts-n-${id}" class="num-input" value="${s.points}"
+            inputmode="decimal" oninput="onPts('${id}',this.value)" />
+          <span class="inp-unit">M</span>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="price-cell">
+        <div class="price-big" id="price-${id}">${fmtPrice(price)}</div>
+        <div class="price-small">per point at TGE</div>
+      </div>
+
+      <!-- Toggle -->
+      <button class="expand-btn" id="btn-${id}"
+        onclick="event.stopPropagation();toggleDetails('${id}')">▾</button>
+
+    </div>
+
+    <!-- DETAILS -->
+    <div class="perp-details" id="det-${id}">
+      <div class="details-chips">
+        <div class="d-chip">
+          <div class="d-chip-label">Time Remaining</div>
+          <div class="d-chip-val">${p.remaining}</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">FDV</div>
+          <div class="d-chip-val" id="dd-fdv-${id}">$${s.fdv}M</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">Allocation</div>
+          <div class="d-chip-val" id="dd-alc-${id}">${s.alloc}%</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">Total Points</div>
+          <div class="d-chip-val" id="dd-pts-${id}">${fmtPts(s.points)}</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">$ / Point</div>
+          <div class="d-chip-val accent" id="dd-price-${id}">${fmtPrice(price)}</div>
+        </div>
+      </div>
+
+      <div class="conditions-row">
+        ${p.conditions.map(c => `<span class="cond-tag">${c}</span>`).join('')}
+      </div>
+
+      <div class="live-formula" id="dd-formula-${id}">
+        Price = (<span class="fv">$${s.fdv}M</span> × <span class="fv">${s.alloc}%</span>) ÷ <span class="fv">${fmtPts(s.points)}</span> = <span class="fv">${fmtPrice(price)}</span>
+      </div>
+
+      <div class="row-footer">
+        <button class="reset-btn" onclick="resetPerp('${id}')">↺ Reset to default</button>
+        ${p.ref && p.ref !== 'JOIN' ? `<div class="ref-tag">Ref code: <span>${p.ref}</span></div>` : ''}
+      </div>
+    </div>
+  </div>`;
+    }
+
+    function renderTier(tier) {
+      const perpsHtml = tier.ids.map(id => renderPerp(id, tier.id)).join('');
+      return `
+  <div class="tier-section ${tier.id}">
+    <div class="tier-header">
+      <div class="tier-pill">${tier.label}</div>
+      <div class="tier-desc">${tier.desc}</div>
+      <div class="tier-line"></div>
+    </div>
+    <div class="table-head">
+      <div class="th">Protocol</div>
+      <div class="th">FDV ($M)</div>
+      <div class="th">Allocation (%)</div>
+      <div class="th">Total Points</div>
+      <div class="th right">$ / Point</div>
+      <div class="th"></div>
+    </div>
+    ${perpsHtml}
+  </div>`;
+    }
+
+    // ─── EVENT HANDLERS ───────────────────────────────────────────────────────
+    function onFdv(id, v) {
+      v = parseFloat(v) || 0;
+      state[id].fdv = v;
+      document.getElementById(`fdv-r-${id}`).value = v;
+      document.getElementById(`fdv-n-${id}`).value = v;
+      updatePrice(id);
+    }
+    function onAlc(id, v) {
+      v = parseFloat(v) || 0;
+      state[id].alloc = v;
+      document.getElementById(`alc-r-${id}`).value = v;
+      document.getElementById(`alc-n-${id}`).value = v;
+      updatePrice(id);
+    }
+    function onPts(id, v) {
+      v = parseFloat(v) || 0.1;
+      state[id].points = v;
+      document.getElementById(`pts-r-${id}`).value = v;
+      document.getElementById(`pts-n-${id}`).value = v;
+      updatePrice(id);
+    }
+
+    function updatePrice(id) {
+      const s = state[id];
+      const price = calcPrice(id);
+
+      // animate price
+      const el = document.getElementById(`price-${id}`);
+      el.classList.remove('price-pop');
+      void el.offsetWidth;
+      el.classList.add('price-pop');
+      el.textContent = fmtPrice(price);
+
+      // update detail chips if open
+      const ddFdv = document.getElementById(`dd-fdv-${id}`);
+      const ddAlc = document.getElementById(`dd-alc-${id}`);
+      const ddPts = document.getElementById(`dd-pts-${id}`);
+      const ddPrice = document.getElementById(`dd-price-${id}`);
+      const ddFormula = document.getElementById(`dd-formula-${id}`);
+      if (ddFdv) ddFdv.textContent = `$${s.fdv}M`;
+      if (ddAlc) ddAlc.textContent = `${s.alloc}%`;
+      if (ddPts) ddPts.textContent = fmtPts(s.points);
+      if (ddPrice) ddPrice.textContent = fmtPrice(price);
+      if (ddFormula) ddFormula.innerHTML =
+        `Price = (<span class="fv">$${s.fdv}M</span> × <span class="fv">${s.alloc}%</span>) ÷ <span class="fv">${fmtPts(s.points)}</span> = <span class="fv">${fmtPrice(price)}</span>`;
+    }
+
+    function toggleDetails(id) {
+      document.getElementById(`det-${id}`).classList.toggle('open');
+      document.getElementById(`btn-${id}`).classList.toggle('open');
+    }
+
+    function resetPerp(id) {
+      const p = PERPS[id];
+      state[id] = { fdv: p.fdv, alloc: p.alloc, points: p.points };
+      onFdv(id, p.fdv);
+      onAlc(id, p.alloc);
+      onPts(id, p.points);
+    }
+
+    // ─── CONFIG EDITOR ────────────────────────────────────────────────────────
+    // Map each perp ID to its tier class
+    const PERP_TIER = {};
+    TIERS.forEach(t => t.ids.forEach(id => { PERP_TIER[id] = t.id; }));
+
+    function cfgCalcPrice(fdv, alloc, pts) {
+      if (!pts) return 0;
+      return (fdv * 1_000_000 * alloc / 100) / (pts * 1_000_000);
+    }
+
+    function populateConfig() {
+      const tbody = document.getElementById('cfg-tbody');
+      const allIds = TIERS.flatMap(t => t.ids);
+      tbody.innerHTML = allIds.map(id => {
+        const p = PERPS[id];
+        const tc = PERP_TIER[id];
+        const tagClass = { t1: 'tag-t1', t2: 'tag-t2', t3: 'tag-t3' }[tc] || '';
+        const tierLbl = { t1: 'T1', t2: 'T2', t3: 'T3' }[tc] || '';
+        const preview = cfgCalcPrice(p.fdv, p.alloc, p.points);
+        return `
+        <tr>
+          <td>
+            <span class="cfg-proto-name">${p.name}</span>
+            <span class="cfg-tier-tag ${tagClass}">${tierLbl}</span>
+          </td>
+          <td>
+            <input type="number" class="cfg-input" id="cfg-fdv-${id}"
+              value="${p.fdv}" min="1" step="10"
+              oninput="updateCfgPreview('${id}')" />
+            <span class="cfg-unit">$M</span>
+          </td>
+          <td>
+            <input type="number" class="cfg-input" id="cfg-alc-${id}"
+              value="${p.alloc}" min="1" max="80" step="0.5"
+              oninput="updateCfgPreview('${id}')" />
+            <span class="cfg-unit">%</span>
+          </td>
+          <td>
+            <input type="number" class="cfg-input" id="cfg-pts-${id}"
+              value="${p.points}" min="0.1" step="0.1"
+              oninput="updateCfgPreview('${id}')" />
+            <span class="cfg-unit">M</span>
+          </td>
+          <td class="cfg-price-preview" id="cfg-prev-${id}">${fmtPrice(preview)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function updateCfgPreview(id) {
+      const fdv = parseFloat(document.getElementById(`cfg-fdv-${id}`).value) || 0;
+      const alloc = parseFloat(document.getElementById(`cfg-alc-${id}`).value) || 0;
+      const pts = parseFloat(document.getElementById(`cfg-pts-${id}`).value) || 0.1;
+      const prev = document.getElementById(`cfg-prev-${id}`);
+      if (prev) prev.textContent = fmtPrice(cfgCalcPrice(fdv, alloc, pts));
+    }
+
+    function openConfig() {
+      populateConfig();
+      document.getElementById('cfg-overlay').classList.add('open');
+    }
+    function closeConfig() {
+      document.getElementById('cfg-overlay').classList.remove('open');
+    }
+
+    function applyConfig() {
+      const allIds = TIERS.flatMap(t => t.ids);
+      allIds.forEach(id => {
+        const fdv = parseFloat(document.getElementById(`cfg-fdv-${id}`).value);
+        const alloc = parseFloat(document.getElementById(`cfg-alc-${id}`).value);
+        const pts = parseFloat(document.getElementById(`cfg-pts-${id}`).value);
+        if (!isNaN(fdv)) PERPS[id].fdv = fdv;
+        if (!isNaN(alloc)) PERPS[id].alloc = alloc;
+        if (!isNaN(pts)) PERPS[id].points = pts;
+        // reset live state to new defaults
+        state[id] = { fdv: PERPS[id].fdv, alloc: PERPS[id].alloc, points: PERPS[id].points };
+        onFdv(id, PERPS[id].fdv);
+        onAlc(id, PERPS[id].alloc);
+        onPts(id, PERPS[id].points);
+      });
+      // persist
+      const saved = {};
+      allIds.forEach(id => {
+        saved[id] = { fdv: PERPS[id].fdv, alloc: PERPS[id].alloc, points: PERPS[id].points };
+      });
+      try { localStorage.setItem('perps-cfg', JSON.stringify(saved)); } catch (e) { }
+      // flash saved message
+      const msg = document.getElementById('cfg-saved-msg');
+      msg.classList.add('show');
+      setTimeout(() => msg.classList.remove('show'), 2000);
+    }
+
+    function hardResetConfig() {
+      if (!confirm('Reset ALL defaults back to the original coded values?')) return;
+      try { localStorage.removeItem('perps-cfg'); } catch (e) { }
+      location.reload();
+    }
+
+    function loadSavedConfig() {
+      try {
+        const raw = localStorage.getItem('perps-cfg');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        Object.keys(saved).forEach(id => {
+          if (!PERPS[id]) return;
+          const s = saved[id];
+          if (s.fdv !== undefined) PERPS[id].fdv = s.fdv;
+          if (s.alloc !== undefined) PERPS[id].alloc = s.alloc;
+          if (s.points !== undefined) PERPS[id].points = s.points;
+        });
+      } catch (e) { }
+    }
+
+    // ─── RENDER ALL ──────────────────────────────────────────────────────────
+    function renderAll() {
+      document.getElementById('perps-root').innerHTML = TIERS.map(renderTier).join('');
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────
+    async function init() {
+      // 1. Initial render with hardcoded defaults
+      initState();
+      loadSavedConfig();
+      renderAll();
+
+      // 2. Fetch comments/conditions config
+      try {
+        const cResp = await fetch('comments.json');
+        if (cResp.ok) {
+          const comments = await cResp.json();
+          Object.keys(comments).forEach(id => {
+            if (PERPS[id]) {
+              PERPS[id].remaining = comments[id].remaining || '';
+              PERPS[id].conditions = comments[id].conditions || [];
+            }
+          });
+          renderAll(); // Re-render with comments
+        }
+      } catch (e) { console.log("Comments config fetch error", e); }
+
+      // 3. Fetch external metrics config
+      try {
+        const resp = await fetch('config.json');
+        if (resp.ok) {
+          const cfg = await resp.json();
+          cfg.forEach(c => {
+            if (PERPS[c.id]) {
+              if (c.fdv !== undefined) PERPS[c.id].fdv = c.fdv;
+              if (c.alloc !== undefined) PERPS[c.id].alloc = c.alloc;
+              if (c.points !== undefined) PERPS[c.id].points = c.points;
+            }
+          });
+          initState();      // Reset state to new global defaults
+          loadSavedConfig(); // Re-apply user overrides 
+          renderAll();      // Final render
+        }
+      } catch (e) { console.log("External config fetch error", e); }
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
