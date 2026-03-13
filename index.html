@@ -745,7 +745,30 @@
     }
 
     .reset-row-btn {
-      display: none;
+      display: flex;
+      position: absolute;
+      right: 56px;
+      /* Positioned to the left of the expand-btn (44px col, but btn is 30px) */
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+      z-index: 5;
+    }
+
+    .reset-row-btn:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: rgba(255, 157, 0, 0.06);
     }
 
     .cfg-btn:hover {
@@ -1126,16 +1149,17 @@
       }
 
       .proto-info {
-        width: auto !important;
+        width: 100% !important;
         margin-bottom: 24px !important;
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
+        /* крайній лівий стан для лого+тексту */
         gap: 12px !important;
         text-align: left !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
       }
 
       .proto-name {
@@ -1214,6 +1238,8 @@
         opacity: 1 !important;
         visibility: visible !important;
         transition: all 0.2s !important;
+        transform: none !important;
+        /* Reset desktop translateMiddle */
       }
 
       .expand-btn {
@@ -1240,7 +1266,7 @@
       </div>
       <div class="header-text-stack">
         <div class="user-branding">BeCryptoBee <span
-            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.12</span>
+            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.13</span>
         </div>
         <div class="header-title">
           Perps Point Cost Calculator
