@@ -325,6 +325,7 @@
       display: flex;
       align-items: center;
       gap: 11px;
+      justify-self: center;
     }
 
     .proto-logo {
@@ -1017,26 +1018,31 @@
       }
 
       .header-inner {
-        flex-direction: column !important;
+        flex-direction: row !important;
         align-items: center !important;
-        text-align: center !important;
+        justify-content: center !important;
         padding-top: 30px !important;
+        gap: 12px !important;
+        width: 100% !important;
       }
 
       .header-text-stack {
-        align-items: center !important;
-        text-align: center !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+        flex-shrink: 0 !important;
       }
 
       .user-branding {
-        font-size: 22px !important;
-        text-align: center !important;
-        margin-bottom: 2px !important;
+        font-size: 24px !important;
+        text-align: left !important;
+        margin-bottom: 0 !important;
+        white-space: nowrap !important;
       }
 
       .header-title {
         font-size: 13px !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
+        white-space: nowrap !important;
       }
 
       .header-socials {
@@ -1163,7 +1169,7 @@
       </div>
       <div class="header-text-stack">
         <div class="user-branding">BeCryptoBee <span
-            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.5</span>
+            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.6</span>
         </div>
         <div class="header-title">
           Perps <span>Point Cost</span> Calculator
