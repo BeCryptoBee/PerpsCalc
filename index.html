@@ -314,7 +314,7 @@
 
     .perp-main {
       display: grid;
-      grid-template-columns: 240px 1fr 1fr 1fr 140px 44px;
+      grid-template-columns: 240px 1fr 1fr 0.8fr 180px 44px;
       gap: 12px;
       align-items: center;
       padding: 14px 18px;
@@ -497,6 +497,8 @@
     /* ─── PRICE CELL ─── */
     .price-cell {
       text-align: right;
+      padding-right: 32px;
+      /* Shift price left to avoid reset btn overlap */
     }
 
     .price-big {
@@ -1115,20 +1117,19 @@
 
       .formula-bar {
         flex-direction: row !important;
-        flex-wrap: nowrap !important;
+        flex-wrap: wrap !important;
         justify-content: center !important;
         gap: 8px !important;
-        font-size: 10px !important;
-        padding: 10px 12px !important;
+        font-size: 11px !important;
+        padding: 12px 16px !important;
         width: 100% !important;
+        text-align: center !important;
       }
 
       .formula-text {
-        white-space: nowrap !important;
-      }
-
-      .formula-label {
-        font-size: 8px !important;
+        white-space: normal !important;
+        /* Allow wrap for long formula on small mobile */
+        width: 100% !important;
       }
 
       .table-head {
@@ -1268,7 +1269,7 @@
       </div>
       <div class="header-text-stack">
         <div class="user-branding">BeCryptoBee <span
-            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.14</span>
+            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.16</span>
         </div>
         <div class="header-title">
           Perps Point Cost Calculator
@@ -1293,8 +1294,9 @@
 
   <div class="formula-bar">
     <button class="cfg-btn" onclick="openConfig()">⚙ <span>Default Options</span></button>
-    <div class="formula-label">📐 Formula</div>
-    <div class="formula-text">$ / point = <b>(FDV × Allocation%)</b> ÷ <b>Total Points</b></div>
+    <div class="formula-text">
+      📐 Formula: $ / point = <b>(FDV × Allocation%)</b> ÷ <b>Total Points</b>
+    </div>
   </div>
 
   <!-- MAIN -->
@@ -1651,12 +1653,12 @@
       <div class="tier-desc">${tier.desc}</div>
       <div class="tier-line"></div>
     </div>
-    <div class="table-head">
+    <div class="table-head" style="grid-template-columns: 240px 1fr 1fr 0.8fr 180px 44px;">
       <div class="th">Protocol</div>
       <div class="th">FDV ($M)</div>
       <div class="th">Allocation (%)</div>
       <div class="th">Total Points</div>
-      <div class="th right">$ / Point</div>
+      <div class="th right" style="padding-right:32px">$ / Point</div>
       <div class="th"></div>
     </div>
     ${perpsHtml}
