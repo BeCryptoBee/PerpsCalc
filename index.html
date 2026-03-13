@@ -170,193 +170,7 @@
       fill: currentColor;
     }
 
-    /* ─── RESPONSIVE STYLES ─── */
-    @media (max-width: 992px) {
-
-      .table-head,
-      .perp-main {
-        grid-template-columns: 200px 1fr 1fr 1fr 120px 44px;
-      }
-    }
-
-    /* Mobile Breakpoint Refined */
-    @media (max-width: 768px) {
-      .header {
-        position: relative !important;
-        height: auto;
-        padding: 12px 16px;
-      }
-
-      .header-inner {
-        flex-direction: row !important;
-        gap: 12px;
-        padding-top: 34px;
-        justify-content: flex-start !important;
-        align-items: center !important;
-      }
-
-      .header-text-stack {
-        text-align: left;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      }
-
-      .hive-hex {
-        width: 48px;
-        height: 52px;
-        padding: 4px;
-      }
-
-      .user-branding {
-        font-size: 24px;
-        text-align: left !important;
-      }
-
-      .header-title {
-        font-size: 13px;
-        justify-content: flex-start !important;
-      }
-
-      .cfg-btn {
-        left: 16px;
-        top: 12px;
-        z-index: 110;
-      }
-
-      .cfg-btn span {
-        display: none;
-      }
-
-      .header-socials {
-        right: 16px;
-        top: 12px;
-        z-index: 110;
-        position: absolute;
-      }
-
-      .container {
-        padding: 16px 10px;
-      }
-
-      .formula-bar {
-        padding: 10px 16px;
-        justify-content: center;
-        text-align: center;
-      }
-
-      .table-head {
-        display: none;
-      }
-
-      .perp-main {
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-        padding: 20px 16px;
-        align-items: stretch;
-        height: auto;
-        min-height: 0;
-      }
-
-      .proto-info {
-        width: 100%;
-        justify-content: flex-start;
-        /* Remove big gap */
-        gap: 12px;
-        padding-right: 48px;
-        /* Room for expand button */
-      }
-
-      .proto-logo {
-        width: 44px;
-        height: 44px;
-      }
-
-      .inp-group {
-        width: 100%;
-        margin-bottom: 2px;
-      }
-
-      .num-input {
-        width: 80px;
-      }
-
-      .price-cell {
-        width: 100%;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding-top: 16px;
-        border-top: 1px solid var(--border);
-      }
-
-      .price-big {
-        font-size: 28px;
-      }
-
-      .expand-btn {
-        position: absolute;
-        top: 20px;
-        right: 16px;
-        z-index: 10;
-      }
-
-      .perp-row {
-        position: relative;
-        height: auto !important;
-      }
-
-      .perp-details {
-        padding: 18px 16px;
-      }
-
-      .details-chips {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-      }
-
-      .d-chip {
-        min-width: 0;
-        padding: 8px 10px;
-      }
-
-      .d-chip:last-child {
-        grid-column: span 2;
-      }
-
-      /* Modal Mobile */
-      .cfg-modal {
-        width: 100%;
-        height: 100%;
-        max-height: 100%;
-        border-radius: 0;
-      }
-
-      .cfg-body {
-        padding: 12px;
-      }
-
-      .cfg-table th:nth-child(3),
-      .cfg-table td:nth-child(3),
-      .cfg-table th:nth-child(4),
-      .cfg-table td:nth-child(4) {
-        display: none;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .user-branding {
-        font-size: 20px;
-      }
-
-      .header-title span {
-        display: none;
-      }
-    }
+    /* Responsive styles moved to end for precedence */
 
     /* ─── FORMULA BAR ─── */
     .formula-bar {
@@ -388,15 +202,7 @@
       font-weight: 700;
     }
 
-    .formula-note {
-      margin-left: auto;
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    .formula-note b {
-      color: var(--accent);
-    }
+    /* Deleted stale formula-note styles */
 
     /* ─── MAIN ─── */
     .container {
@@ -1192,6 +998,155 @@
     .cfg-saved-msg.show {
       opacity: 1;
     }
+
+    @media (max-width: 768px) {
+
+      /* Mobile Global overrides */
+      html,
+      body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        height: auto !important;
+        padding: 12px 16px !important;
+        position: relative !important;
+      }
+
+      .header-inner {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        padding-top: 30px !important;
+      }
+
+      .header-text-stack {
+        align-items: center !important;
+        text-align: center !important;
+      }
+
+      .user-branding {
+        font-size: 22px !important;
+        text-align: center !important;
+        margin-bottom: 2px !important;
+      }
+
+      .header-title {
+        font-size: 13px !important;
+        justify-content: center !important;
+      }
+
+      .header-socials {
+        position: relative !important;
+        right: auto !important;
+        top: auto !important;
+        margin-top: 15px !important;
+        justify-content: center !important;
+        width: 100% !important;
+        z-index: 10 !important;
+      }
+
+      .cfg-btn {
+        position: absolute !important;
+        left: 16px !important;
+        top: 12px !important;
+        z-index: 20 !important;
+      }
+
+      .container {
+        padding: 12px 10px !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+      }
+
+      .formula-bar {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: center !important;
+        gap: 6px !important;
+        font-size: 9px !important;
+        padding: 10px 8px !important;
+      }
+
+      .formula-text {
+        white-space: nowrap !important;
+      }
+
+      .formula-label {
+        font-size: 8px !important;
+      }
+
+      .table-head {
+        display: none !important;
+      }
+
+      .perp-row {
+        width: 100% !important;
+        margin: 0 0 10px 0 !important;
+        border-radius: 12px !important;
+      }
+
+      .perp-main {
+        display: block !important;
+        padding: 16px !important;
+        height: auto !important;
+        width: 100% !important;
+      }
+
+      .proto-info {
+        width: 100% !important;
+        margin-bottom: 18px !important;
+      }
+
+      .inp-group {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 12px !important;
+      }
+
+      .inp-label {
+        font-size: 9px !important;
+        margin-bottom: 4px !important;
+      }
+
+      .inp-row {
+        display: flex !important;
+        gap: 10px !important;
+        align-items: center !important;
+        width: 100% !important;
+      }
+
+      .inp-row input[type="range"] {
+        flex: 1 !important;
+      }
+
+      .num-input {
+        width: 68px !important;
+        border-radius: 6px !important;
+      }
+
+      .price-cell {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        border-top: 1px solid var(--border) !important;
+        padding-top: 14px !important;
+        margin-top: 4px !important;
+      }
+
+      .price-big {
+        font-size: 26px !important;
+      }
+
+      .expand-btn {
+        position: absolute !important;
+        top: 16px !important;
+        right: 16px !important;
+      }
+    }
   </style>
 </head>
 
@@ -1207,7 +1162,9 @@
           alt="Bee" />
       </div>
       <div class="header-text-stack">
-        <div class="user-branding">BeCryptoBee</div>
+        <div class="user-branding">BeCryptoBee <span
+            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.5</span>
+        </div>
         <div class="header-title">
           Perps <span>Point Cost</span> Calculator
         </div>
@@ -1444,8 +1401,11 @@
       if (v >= 1) return '$' + v.toFixed(2);
 
       // For < $1, show 2 significant digits
-      return '$' + Number(v.toPrecision(2)).toString();
+      const fmt = v.toPrecision(2);
+      return '$' + Number(fmt).toString();
     }
+    console.log('fmtPrice loaded: using 2 decimal places for $1+ and 2 sig digits for <$1');
+
     function fmtPts(v) {
       if (v >= 1000) return (v / 1000).toFixed(1) + 'B';
       return v % 1 === 0 ? v + 'M' : parseFloat(v).toFixed(1) + 'M';
