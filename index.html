@@ -1353,7 +1353,7 @@
         id: 't2',
         label: 'Tier 2',
         desc: 'Solid projects with good risk/reward',
-        ids: ['ethereal', 'extended', 'grvt', 'o1exchange'],
+        ids: ['ethereal', 'extended', 'grvt', 'o1exchange', 'backpack'],
       },
       {
         id: 't3',
@@ -1482,6 +1482,23 @@
         ptsMax: 150, ptsStep: 1,
         remaining: '',
         conditions: [],
+        ref: null,
+      },
+      backpack: {
+        name: 'Backpack',
+        stage: 'PERP DEX ·SOLANA/EVM',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=backpack.exchange&sz=64',
+        fb: 'BP',
+        fdv: 200, alloc: 24, points: 420,
+        ptsMax: 1000, ptsStep: 1,
+        remaining: 'Epilogue phase before TGE',
+        conditions: [
+          'Points program runs across Pre-Season + Seasons 1-4',
+          '~300M+ points accumulated across seasons',
+          'Final Epilogue redistribution before snapshot',
+          '24% of token supply allocated to points holders'
+        ],
         ref: null,
       },
     };

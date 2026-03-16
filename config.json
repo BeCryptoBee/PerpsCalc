@@ -1,0 +1,62 @@
+[
+    {
+        "id": "variational",
+        "fdv": 300,
+        "alloc": 20,
+        "points": 9.5
+    },
+    {
+        "id": "edgex",
+        "fdv": 600,
+        "alloc": 10,
+        "points": 8
+    },
+    {
+        "id": "nado",
+        "fdv": 1000,
+        "alloc": 5,
+        "points": 30
+    },
+    {
+        "id": "ethereal",
+        "fdv": 100,
+        "alloc": 20,
+        "points": 6500
+    },
+    {
+        "id": "extended",
+        "fdv": 200,
+        "alloc": 25,
+        "points": 50
+    },
+    {
+        "id": "grvt",
+        "fdv": 150,
+        "alloc": 28,
+        "points": 5
+    },
+    {
+        "id": "o1exchange",
+        "fdv": 150,
+        "alloc": 10,
+        "points": 40
+    },
+    {
+        "id": "pacifica",
+        "fdv": 100,
+        "alloc": 15,
+        "points": 300
+    },
+    {
+        "id": "ostium",
+        "fdv": 200,
+        "alloc": 15,
+        "points": 50
+    },
+    {
+        "id": "hibachi",
+        "fdv": 100,
+        "alloc": 15,
+        "points": 52
+    }
+]
