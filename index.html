@@ -350,9 +350,12 @@
     }
 
     .proto-info[onclick]:hover {
-      background: rgba(245, 197, 24, 0.04);
-      box-shadow: 0 0 15px rgba(245, 197, 24, 0.08);
-      transform: translateX(2px);
+      background: rgba(245, 197, 24, 0.08);
+      /* Slightly brighter background */
+      box-shadow: 0 0 30px rgba(245, 197, 24, 0.15);
+      /* More diffuse and brighter glow */
+      transform: translateX(3px);
+      /* Slightly more pronounced move */
     }
 
     .proto-logo {
@@ -1607,7 +1610,7 @@
             ${p.name}<span class="status-badge ${stClass(s.status || p.status)}">${(s.statusLabel || p.statusLabel).replace('Final Stretch', 'TGE Soon')}</span>
           </div>
           <div class="proto-stage">${p.stage}</div>
-          ${p.link ? `<div class="proto-link" style="font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 600;">Link</div>` : ''}
+          ${p.link ? `<div class="proto-link" style="font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 700; letter-spacing: 0.5px;">LINK</div>` : ''}
         </div>
       </div>
 
