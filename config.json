@@ -3,66 +3,78 @@
         "id": "variational",
         "fdv": 300,
         "alloc": 20,
-        "points": 9.5
+        "points": 9.5,
+        "status": "active"
     },
     {
         "id": "edgex",
         "fdv": 600,
         "alloc": 10,
-        "points": 8
+        "points": 8,
+        "status": "tge_soon"
     },
     {
         "id": "nado",
-        "fdv": 500,
-        "alloc": 5,
-        "points": 30
+        "fdv": 1000,
+        "alloc": 10,
+        "points": 30,
+        "status": "active"
     },
     {
         "id": "ethereal",
-        "fdv": 100,
+        "fdv": 150,
         "alloc": 20,
-        "points": 6500
+        "points": 6500,
+        "status": "active"
     },
     {
         "id": "extended",
         "fdv": 200,
         "alloc": 25,
-        "points": 50
+        "points": 50,
+        "status": "active"
     },
     {
         "id": "grvt",
         "fdv": 150,
         "alloc": 28,
-        "points": 5
+        "points": 5,
+        "status": "active"
     },
     {
         "id": "o1exchange",
         "fdv": 150,
         "alloc": 10,
-        "points": 40
+        "points": 40,
+        "status": "active",
+        "link": "https://01.xyz/ref/019c4282-f296-72cb-8537-33ac3912c547"
     },
     {
         "id": "pacifica",
         "fdv": 100,
         "alloc": 15,
-        "points": 300
+        "points": 300,
+        "status": "active"
     },
     {
         "id": "ostium",
         "fdv": 200,
         "alloc": 15,
-        "points": 50
+        "points": 50,
+        "status": "active"
     },
     {
         "id": "hibachi",
         "fdv": 100,
         "alloc": 15,
-        "points": 52
+        "points": 52,
+        "status": "active"
     },
     {
         "id": "backpack",
         "fdv": 400,
         "alloc": 24,
-        "points": 420
+        "points": 420,
+        "status": "active"
     }
 ]

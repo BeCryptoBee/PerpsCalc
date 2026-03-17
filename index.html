@@ -404,19 +404,13 @@
       border: 1px solid rgba(57, 217, 138, 0.2);
     }
 
-    .st-boost {
+    .st-tge_soon {
       background: rgba(255, 157, 0, 0.12);
       color: var(--accent2);
       border: 1px solid rgba(255, 157, 0, 0.25);
     }
 
-    .st-final {
-      background: rgba(79, 143, 255, 0.10);
-      color: var(--blue);
-      border: 1px solid rgba(79, 143, 255, 0.2);
-    }
-
-    .st-capped {
+    .st-late {
       background: rgba(255, 79, 79, 0.10);
       color: var(--red);
       border: 1px solid rgba(255, 79, 79, 0.2);
@@ -1481,11 +1475,11 @@
         ref: 'KOVPKD2',
       },
       o1exchange: {
-        name: 'O1 Exchange',
+        name: '01.xyz',
         stage: 'PERP DEX · MULTI-PHASE',
         status: 'active', statusLabel: 'Active',
         logo: 'https://pbs.twimg.com/profile_images/1553029460236337152/QjHF5aPb_400x400.jpg',
-        fb: 'O1',
+        fb: '01',
         fdv: 150, alloc: 10, points: 40,
         ptsMax: 150, ptsStep: 1,
         remaining: 'Ongoing Phases',
@@ -1530,7 +1524,7 @@
       },
       backpack: {
         name: 'Backpack',
-        stage: 'PERP DEX ·SOLANA/EVM',
+        stage: 'CEX',
         status: 'active', statusLabel: 'Active',
         logo: 'https://www.google.com/s2/favicons?domain=backpack.exchange&sz=64',
         fb: 'BP',
@@ -1579,7 +1573,7 @@
       return v % 1 === 0 ? v + 'M' : parseFloat(v).toFixed(1) + 'M';
     }
     function stClass(s) {
-      return { active: 'st-active', boost: 'st-boost', final: 'st-final', capped: 'st-capped' }[s] || 'st-active';
+      return { active: 'st-active', tge_soon: 'st-tge_soon', late: 'st-late' }[s] || 'st-active';
     }
     function tierClass(tid) {
       return { t1: 't1', t2: 't2', t3: 't3' }[tid] || 't3';
@@ -1596,16 +1590,17 @@
   <div class="perp-row ${tc}" id="row-${id}">
     <div class="perp-main" onclick="toggleDetails('${id}')">
 
-      <div class="proto-info">
+      <div class="proto-info" ${p.link ? `onclick="event.stopPropagation(); window.open('${p.link}', '_blank')"` : ''} style="${p.link ? 'cursor: pointer;' : ''}">
         <div class="proto-logo" id="logo-${id}">
           <img src="${p.logo}" alt="${p.name}"
             onerror="this.parentElement.innerHTML='${p.fb}'" />
         </div>
-        <div>
-          <div class="proto-name">
-            ${p.name}<span class="status-badge ${stClass(p.status)}">${p.statusLabel}</span>
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+          <div class="proto-name" style="display: flex; align-items: center; gap: 5px;">
+            ${p.name}<span class="status-badge ${stClass(s.status || p.status)}">${(s.statusLabel || p.statusLabel).replace('Final Stretch', 'TGE Soon')}</span>
           </div>
           <div class="proto-stage">${p.stage}</div>
+          ${p.link ? `<div class="proto-link" style="font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 600;">Link</div>` : ''}
         </div>
       </div>
 
@@ -1973,6 +1968,12 @@
               if (c.fdv !== undefined) PERPS[c.id].fdv = c.fdv;
               if (c.alloc !== undefined) PERPS[c.id].alloc = c.alloc;
               if (c.points !== undefined) PERPS[c.id].points = c.points;
+              if (c.status !== undefined) {
+                PERPS[c.id].status = c.status;
+                const labels = { active: 'Active', tge_soon: 'TGE Soon', late: 'Late' };
+                PERPS[c.id].statusLabel = labels[c.status] || 'Active';
+              }
+              if (c.link !== undefined) PERPS[c.id].link = c.link;
             }
           });
           initState();      // Reset state to new global defaults
