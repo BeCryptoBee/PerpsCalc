@@ -146,8 +146,8 @@
     }
 
     .social-link {
-      width: 32px;
-      height: 32px;
+      width: 40px;
+      height: 40px;
       background: var(--bg-input);
       border: 1px solid var(--border-acc);
       border-radius: 50%;
@@ -165,8 +165,8 @@
     }
 
     .social-link svg {
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       fill: currentColor;
     }
 
@@ -266,9 +266,15 @@
     /* ─── TABLE COLUMNS HEADER ─── */
     .table-head {
       display: grid;
-      grid-template-columns: 240px 1fr 1fr 1fr 140px 44px;
-      gap: 12px;
+      grid-template-columns: 190px 1fr 1fr 1fr 130px 100px 100px 80px;
+      gap: 16px;
       padding: 0 18px 8px 18px;
+      /* Removed extra 3px left padding */
+    }
+
+    .th:first-child {
+      padding-left: 0;
+      /* Align with new proto-info position */
     }
 
     .th {
@@ -314,12 +320,22 @@
 
     .perp-main {
       display: grid;
-      grid-template-columns: 240px 1fr 1fr 0.8fr 180px 44px;
-      gap: 12px;
+      grid-template-columns: 190px 1fr 1fr 1fr 130px 100px 100px 80px;
+      gap: 16px;
       align-items: center;
       padding: 14px 18px;
       cursor: pointer;
       position: relative;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+      justify-self: end;
+      flex-shrink: 0;
+      width: 80px;
     }
 
     /* Protocol info */
@@ -328,7 +344,8 @@
       align-items: center;
       gap: 11px;
       justify-self: start;
-      padding-left: 20px;
+      padding-left: 0;
+      /* Shifted left as requested */
     }
 
     .proto-logo {
@@ -469,7 +486,7 @@
       font-size: 12px;
       font-weight: 700;
       padding: 4px 8px;
-      width: 72px;
+      width: 50px !important;
       text-align: right;
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
@@ -485,6 +502,17 @@
     .num-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.12);
+    }
+
+    .inp-value-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: flex-end;
+      width: auto;
+      flex-shrink: 0;
+      white-space: nowrap !important;
+      /* Force no wrap for unit */
     }
 
     .inp-unit {
@@ -539,13 +567,13 @@
 
     /* ─── EXPAND BUTTON ─── */
     .expand-btn {
-      background: none;
-      border: 1px solid var(--border);
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
       border-radius: var(--radius-sm);
       color: var(--muted);
       cursor: pointer;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -749,23 +777,17 @@
 
     .reset-row-btn {
       display: flex;
-      position: absolute;
-      right: 56px;
-      /* Positioned to the left of the expand-btn (44px col, but btn is 30px) */
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: 1px solid var(--border);
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
       border-radius: var(--radius-sm);
       color: var(--muted);
       cursor: pointer;
-      width: 30px;
-      height: 30px;
+      width: 32px;
+      height: 32px;
       align-items: center;
       justify-content: center;
       font-size: 14px;
       transition: all 0.2s;
-      z-index: 5;
     }
 
     .reset-row-btn:hover {
@@ -1106,7 +1128,7 @@
       }
 
       .cfg-btn span {
-        display: none !important;
+        display: inline !important;
       }
 
       .container {
@@ -1143,8 +1165,10 @@
       }
 
       .perp-main {
-        display: block !important;
-        padding: 16px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 20px 20px 10px 20px !important;
+        /* Reduced bottom padding */
         height: auto !important;
         width: 100% !important;
         position: relative !important;
@@ -1152,17 +1176,15 @@
 
       .proto-info {
         width: 100% !important;
-        margin-bottom: 24px !important;
+        margin-bottom: 20px !important;
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        justify-content: flex-start !important;
+        justify-content: center !important;
+        /* Center logo in mobile */
         gap: 12px !important;
         text-align: left !important;
-        margin-left: 0 !important;
-        margin-right: 0 !important;
         padding-left: 0 !important;
-        /* extreme left */
       }
 
       .proto-name {
@@ -1170,26 +1192,31 @@
       }
 
       .inp-group {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
         width: 100% !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 16px !important;
       }
 
       .inp-label {
-        font-size: 9px !important;
-        margin-bottom: 4px !important;
+        font-size: 10px !important;
+        margin-bottom: 6px !important;
+        text-align: center !important;
       }
 
       .inp-row {
         display: flex !important;
         flex-direction: row !important;
-        gap: 10px !important;
+        gap: 12px !important;
         align-items: center !important;
         width: 100% !important;
+        justify-content: center !important;
       }
 
       .inp-row input[type="range"] {
         flex: 1 !important;
+        max-width: 100% !important;
         margin: 0 !important;
       }
 
@@ -1210,16 +1237,25 @@
       }
 
       .price-cell {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
         width: 100% !important;
         text-align: center !important;
         border-top: 1px solid var(--border) !important;
-        padding-top: 14px !important;
-        margin-top: 4px !important;
+        padding-top: 15px !important;
+        padding-right: 0 !important;
+        /* Force no padding */
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+        /* Reduced bottom gap */
       }
 
       .price-big {
-        font-size: 26px !important;
+        font-size: 28px !important;
+        display: block !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
       }
 
       .reset-row-btn {
@@ -1254,6 +1290,14 @@
         visibility: visible !important;
         z-index: 5 !important;
       }
+
+      .point-group {
+        margin-top: 8px !important;
+        /* Reduced top gap from 15px */
+        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding-top: 8px !important;
+        /* Reduced top padding from 15px */
+      }
     }
   </style>
 </head>
@@ -1277,16 +1321,16 @@
       </div>
     </div>
     <div class="header-socials">
-      <a href="https://t.me/BeCryptoBee" target="_blank" class="social-link" title="Telegram">
-        <svg viewBox="0 0 24 24">
-          <path
-            d="M11.944 0C5.352 0 0 5.352 0 11.944c0 6.592 5.352 11.944 11.944 11.944 6.592 0 11.944-5.352 11.944-11.944C23.888 5.352 18.536 0 11.944 0zm5.832 8.356c-.164 1.724-1.144 7.544-1.64 10.196-.208 1.12-.616 1.492-1.016 1.528-.868.08-1.528-.572-2.368-1.124-1.316-.864-2.06-1.396-3.332-2.236-1.472-.968-.516-1.5.32-2.368.216-.228 4.028-3.692 4.104-3.996.008-.036.012-.172-.072-.244-.084-.072-.204-.048-.292-.028-.124.028-2.112 1.344-5.952 3.936-.564.388-1.076.58-1.536.568-.508-.012-1.484-.288-2.212-.524-.892-.288-1.604-.444-1.54-.936.032-.256.384-.516 1.056-.784 4.128-1.792 6.876-2.976 8.244-3.552 3.924-1.644 4.74-1.932 5.272-1.94.116-.004.376.024.544.164.14.116.18.272.196.388.016.128.02.404.004.604z" />
-        </svg>
-      </a>
       <a href="https://x.com/MashuraArtem" target="_blank" class="social-link" title="Twitter / X">
         <svg viewBox="0 0 24 24">
           <path
             d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      </a>
+      <a href="https://t.me/BeCryptoBee" target="_blank" class="social-link" title="Telegram">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M11.944 0C5.352 0 0 5.352 0 11.944c0 6.592 5.352 11.944 11.944 11.944 6.592 0 11.944-5.352 11.944-11.944C23.888 5.352 18.536 0 11.944 0zm5.832 8.356c-.164 1.724-1.144 7.544-1.64 10.196-.208 1.12-.616 1.492-1.016 1.528-.868.08-1.528-.572-2.368-1.124-1.316-.864-2.06-1.396-3.332-2.236-1.472-.968-.516-1.5.32-2.368.216-.228 4.028-3.692 4.104-3.996.008-.036.012-.172-.072-.244-.084-.072-.204-.048-.292-.028-.124.028-2.112 1.344-5.952 3.936-.564.388-1.076.58-1.536.568-.508-.012-1.484-.288-2.212-.524-.892-.288-1.604-.444-1.54-.936.032-.256.384-.516 1.056-.784 4.128-1.792 6.876-2.976 8.244-3.552 3.924-1.644 4.74-1.932 5.272-1.94.116-.004.376.024.544.164.14.116.18.272.196.388.016.128.02.404.004.604z" />
         </svg>
       </a>
     </div>
@@ -1509,7 +1553,7 @@
       state = {};
       Object.keys(PERPS).forEach(id => {
         const p = PERPS[id];
-        state[id] = { fdv: p.fdv, alloc: p.alloc, points: p.points };
+        state[id] = { fdv: p.fdv, alloc: p.alloc, points: p.points, yourPoints: 0 };
       });
     }
 
@@ -1586,7 +1630,7 @@
           <input type="range" id="alc-r-${id}" min="1" max="80" step="0.5" value="${s.alloc}"
             oninput="onAlc('${id}',this.value)" />
           <div class="inp-value-row">
-            <input type="number" id="alc-n-${id}" class="num-input" value="${s.alloc}" style="width:60px"
+            <input type="number" id="alc-n-${id}" class="num-input" value="${s.alloc}"
               inputmode="decimal" oninput="onAlc('${id}',this.value)" />
             <span class="inp-unit">%</span>
           </div>
@@ -1613,10 +1657,27 @@
         <div class="price-small">per point at TGE</div>
       </div>
 
+      <!-- Your Points -->
+      <div class="inp-group point-group" style="align-items: center; text-align: center;" onclick="event.stopPropagation()">
+        <div class="inp-label">Your Points</div>
+        <div class="inp-row">
+          <input type="number" id="ypts-${id}" class="num-input" value="${s.yourPoints || 0}"
+            style="text-align: center; width: 68px !important;"
+            inputmode="decimal" oninput="onYourPts('${id}',this.value)" placeholder="0" />
+        </div>
+      </div>
+
+      <div class="inp-group value-group" style="align-items: center; text-align: center;">
+        <div class="inp-label">Est. Value</div>
+        <div class="price-big" id="estval-${id}" style="font-size: 18px;">${fmtPrice(price * (s.yourPoints || 0))}</div>
+      </div>
+
       <!-- Toggle -->
-      <button class="reset-row-btn" onclick="event.stopPropagation();resetPerp('${id}')">↺</button>
-      <button class="expand-btn" id="btn-${id}"
-        onclick="event.stopPropagation();toggleDetails('${id}')">▾</button>
+      <div class="btn-group">
+        <button class="reset-row-btn" onclick="event.stopPropagation();resetPerp('${id}')">↺</button>
+        <button class="expand-btn" id="btn-${id}"
+          onclick="event.stopPropagation();toggleDetails('${id}')">▾</button>
+      </div>
 
     </div>
 
@@ -1670,12 +1731,14 @@
       <div class="tier-desc">${tier.desc}</div>
       <div class="tier-line"></div>
     </div>
-    <div class="table-head" style="grid-template-columns: 240px 1fr 1fr 0.8fr 180px 44px;">
+    <div class="table-head">
       <div class="th">Protocol</div>
       <div class="th">FDV ($M)</div>
       <div class="th">Allocation (%)</div>
       <div class="th">Total Points</div>
       <div class="th right" style="padding-right:32px">$ / Point</div>
+      <div class="th" style="text-align:center">Your Points</div>
+      <div class="th" style="text-align:center">Est. Value</div>
       <div class="th"></div>
     </div>
     ${perpsHtml}
@@ -1704,10 +1767,16 @@
       document.getElementById(`pts-n-${id}`).value = v;
       updatePrice(id);
     }
+    function onYourPts(id, v) {
+      v = parseFloat(v) || 0;
+      state[id].yourPoints = v;
+      updatePrice(id);
+    }
 
     function updatePrice(id) {
       const s = state[id];
       const price = calcPrice(id);
+      const estVal = price * (s.yourPoints || 0);
 
       // animate price
       const el = document.getElementById(`price-${id}`);
@@ -1715,6 +1784,10 @@
       void el.offsetWidth;
       el.classList.add('price-pop');
       el.textContent = fmtPrice(price);
+
+      // update est value
+      const evEl = document.getElementById(`estval-${id}`);
+      if (evEl) evEl.textContent = fmtPrice(estVal);
 
       // update detail chips if open
       const ddFdv = document.getElementById(`dd-fdv-${id}`);
@@ -1737,10 +1810,12 @@
 
     function resetPerp(id) {
       const p = PERPS[id];
-      state[id] = { fdv: p.fdv, alloc: p.alloc, points: p.points };
+      state[id] = { fdv: p.fdv, alloc: p.alloc, points: p.points, yourPoints: 0 };
       onFdv(id, p.fdv);
       onAlc(id, p.alloc);
       onPts(id, p.points);
+      document.getElementById(`ypts-${id}`).value = 0;
+      updatePrice(id);
     }
 
     // ─── CONFIG EDITOR ────────────────────────────────────────────────────────
@@ -1769,22 +1844,28 @@
             <span class="cfg-tier-tag ${tagClass}">${tierLbl}</span>
           </td>
           <td>
-            <input type="number" class="cfg-input" id="cfg-fdv-${id}"
-              value="${p.fdv}" min="1" step="10"
-              oninput="updateCfgPreview('${id}')" />
-            <span class="cfg-unit">$M</span>
+            <div class="inp-value-row">
+              <input type="number" class="cfg-input" id="cfg-fdv-${id}"
+                value="${p.fdv}" min="1" step="10"
+                oninput="updateCfgPreview('${id}')" />
+              <span class="cfg-unit">$M</span>
+            </div>
           </td>
           <td>
-            <input type="number" class="cfg-input" id="cfg-alc-${id}"
-              value="${p.alloc}" min="1" max="80" step="0.5"
-              oninput="updateCfgPreview('${id}')" />
-            <span class="cfg-unit">%</span>
+            <div class="inp-value-row">
+              <input type="number" class="cfg-input" id="cfg-alc-${id}"
+                value="${p.alloc}" min="1" max="80" step="0.5"
+                oninput="updateCfgPreview('${id}')" />
+              <span class="cfg-unit">%</span>
+            </div>
           </td>
           <td>
-            <input type="number" class="cfg-input" id="cfg-pts-${id}"
-              value="${p.points}" min="0.1" step="0.1"
-              oninput="updateCfgPreview('${id}')" />
-            <span class="cfg-unit">M</span>
+            <div class="inp-value-row">
+              <input type="number" class="cfg-input" id="cfg-pts-${id}"
+                value="${p.points}" min="0.1" step="0.1"
+                oninput="updateCfgPreview('${id}')" />
+              <span class="cfg-unit">M</span>
+            </div>
           </td>
           <td class="cfg-price-preview" id="cfg-prev-${id}">${fmtPrice(preview)}</td>
         </tr>`;

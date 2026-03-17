@@ -61,7 +61,7 @@
     },
     {
         "id": "backpack",
-        "fdv": 200,
+        "fdv": 400,
         "alloc": 24,
         "points": 420
     }
