@@ -13,7 +13,7 @@
     },
     {
         "id": "nado",
-        "fdv": 1000,
+        "fdv": 500,
         "alloc": 5,
         "points": 30
     },
@@ -58,5 +58,11 @@
         "fdv": 100,
         "alloc": 15,
         "points": 52
+    },
+    {
+        "id": "backpack",
+        "fdv": 200,
+        "alloc": 24,
+        "points": 420
     }
 ]

@@ -1,0 +1,101 @@
+{
+    "variational": {
+        "remaining": "Until Q3 2026",
+        "conditions": [
+            "~9.5M total points",
+            "3M retroactive allocation",
+            "~150,000 pts / week",
+            "Program runs until Q3 2026"
+        ]
+    },
+    "edgex": {
+        "remaining": "Pre-TGE Season until TGE",
+        "conditions": [
+            "~7.31M distributed in Open Season",
+            "Pre-TGE Season launched Jan 2026",
+            "XP distributed weekly until TGE",
+            "Rewards driven by trading, TVL, referrals and boosts"
+        ]
+    },
+    "nado": {
+        "remaining": "Growth Stage",
+        "conditions": [
+            "~30M total points",
+            "950k–1M pts / week",
+            "Season 1 + bonus pool",
+            "Active distribution ongoing"
+        ]
+    },
+    "ethereal": {
+        "remaining": "No cap announced",
+        "conditions": [
+            "~6,500M total points (6.5B)",
+            "~200M pts / week since Cycle 10",
+            "No distribution limit set",
+            "EVM-compatible"
+        ]
+    },
+    "extended": {
+        "remaining": "~8–9 month full run",
+        "conditions": [
+            "~50M total points expected",
+            "1.2M pts / week (Season 1 ongoing)",
+            "Early allocation: 4.3M",
+            "Estimated 8–9 month full run"
+        ]
+    },
+    "grvt": {
+        "remaining": "Runs into TGE period",
+        "conditions": [
+            "Dynamic weekly rewards pool",
+            "100k–150k pts / week baseline range",
+            "Reward size linked to platform activity",
+            "Cap framed around TGE window"
+        ]
+    },
+    "o1exchange": {
+        "remaining": "Season 2 Phase 1 live",
+        "conditions": [
+            "40M points in Phase 1",
+            "2M pts / week for 20 weeks",
+            "Phase-based release model",
+            "All trading volume earns share of weekly pool"
+        ]
+    },
+    "pacifica": {
+        "remaining": "High Velocity",
+        "conditions": [
+            "~300M total points",
+            "10M pts / week ongoing",
+            "Accumulated >213M already",
+            "High velocity accumulation"
+        ]
+    },
+    "ostium": {
+        "remaining": "Season 2 active",
+        "conditions": [
+            "25M S2 hard cap",
+            "Boost Windows introduced",
+            "RWA focus: SPX/USD pairs",
+            "2x points and fee discounts on rotating markets"
+        ]
+    },
+    "hibachi": {
+        "remaining": "Until TGE (~65M cap)",
+        "conditions": [
+            "52M in circulation",
+            "Mad March: rewards doubled (500k → 1M/week)",
+            "Expected full cap ~65M by TGE",
+            "Boosted event ongoing"
+        ]
+    },
+    "backpack": {
+        "remaining": "Epilogue phase before TGE",
+        "conditions": [
+            "Points program runs across Pre-Season + Seasons 1-4",
+            "~300M+ points accumulated across seasons",
+            "Final Epilogue redistribution before snapshot",
+            "24% of token supply allocated to points holders"
+        ]
+    }
+}
