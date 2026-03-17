@@ -345,7 +345,14 @@
       gap: 11px;
       justify-self: start;
       padding-left: 0;
-      /* Shifted left as requested */
+      transition: all 0.2s;
+      border-radius: var(--radius-sm);
+    }
+
+    .proto-info[onclick]:hover {
+      background: rgba(245, 197, 24, 0.04);
+      box-shadow: 0 0 15px rgba(245, 197, 24, 0.08);
+      transform: translateX(2px);
     }
 
     .proto-logo {
@@ -1608,7 +1615,7 @@
       <div class="inp-group" onclick="event.stopPropagation()">
         <div class="inp-label">FDV</div>
         <div class="inp-row">
-          <input type="range" id="fdv-r-${id}" min="10" max="3000" step="10" value="${s.fdv}"
+          <input type="range" id="fdv-r-${id}" min="10" max="1000" step="10" value="${s.fdv}"
             oninput="onFdv('${id}',this.value)" />
           <div class="inp-value-row">
             <input type="number" id="fdv-n-${id}" class="num-input" value="${s.fdv}"
