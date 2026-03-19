@@ -4,7 +4,8 @@
         "fdv": 300,
         "alloc": 20,
         "points": 9.5,
-        "status": "active"
+        "status": "active",
+        "link": "https://omni.variational.io/"
     },
     {
         "id": "edgex",
@@ -20,7 +21,8 @@
         "fdv": 1000,
         "alloc": 10,
         "points": 30,
-        "status": "active"
+        "status": "active",
+        "link": "https://app.nado.xyz/"
     },
     {
         "id": "ethereal",
@@ -40,7 +42,8 @@
         "fdv": 200,
         "alloc": 25,
         "points": 50,
-        "status": "active"
+        "status": "active",
+        "link": "https://app.extended.exchange/"
     },
     {
         "id": "grvt",
@@ -63,27 +66,31 @@
         "fdv": 100,
         "alloc": 15,
         "points": 300,
-        "status": "active"
+        "status": "active",
+        "link": "https://app.pacifica.fi/"
     },
     {
         "id": "ostium",
         "fdv": 200,
         "alloc": 15,
         "points": 50,
-        "status": "active"
+        "status": "active",
+        "link": "https://app.ostium.com/trade"
     },
     {
         "id": "hibachi",
         "fdv": 100,
         "alloc": 15,
         "points": 52,
-        "status": "active"
+        "status": "active",
+        "link": "https://hibachi.xyz/trade"
     },
     {
         "id": "backpack",
         "fdv": 400,
         "alloc": 24,
         "points": 420,
-        "status": "late"
+        "status": "late",
+        "link": "https://backpack.exchange/"
     }
 ]
