@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Perps Dashboard server — port 8765 with visitor tracking."""
+"""Perps Dashboard server — port 8765 with visitor tracking and CORS."""
 import http.server
 import socketserver
 import sqlite3
@@ -129,6 +129,18 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, format, *args):
         print(f"[PERPS] {self.address_string()} - {format % args}")
 
+    def end_headers(self):
+        # Enable CORS for all responses
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "GET, OPTIONS, POST")
+        self.send_header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type")
+        super().end_headers()
+
+    def do_OPTIONS(self):
+        # Handle CORS preflight
+        self.send_response(200)
+        self.end_headers()
+
     def do_GET(self):
         parsed = urlparse(self.path)
         params = parse_qs(parsed.query)
@@ -138,7 +150,6 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             key = params.get("key", [""])[0]
             if key != STATS_KEY:
                 self.send_response(403)
-                self.send_header("Content-Type", "text/plain")
                 self.end_headers()
                 self.wfile.write(b"403 Forbidden")
                 return
@@ -150,11 +161,28 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             self.wfile.write(body)
             return
 
-        # ── Log only main page visits (not assets) ────────────────────────────
+        # ── Tracking endpoint (pinged from JS) ────────────────────────────────
+        if parsed.path == "/track":
+            # Extract real IP (check for Proxy headers first)
+            ip = self.headers.get("X-Forwarded-For", self.client_address[0]).split(",")[0].strip()
+            ua = self.headers.get("User-Agent", "Unknown")
+            page = params.get("page", ["GitHubPages"])[0]
+            log_visit(ip, page, ua)
+            
+            # Respond with a tiny 1x1 transparent GIF (classic tracker style)
+            pixel = b"GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00!\xf9\x04\x01\x00\x00\x00\x00,\x00\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;"
+            self.send_response(200)
+            self.send_header("Content-Type", "image/gif")
+            self.send_header("Content-Length", str(len(pixel)))
+            self.end_headers()
+            self.wfile.write(pixel)
+            return
+
+        # ── Log local visits (if running directly) ────────────────────────────
         if parsed.path in ("/", "/index.html"):
             ip = self.client_address[0]
-            ua = self.headers.get("User-Agent", "")
-            log_visit(ip, parsed.path, ua)
+            ua = self.headers.get("User-Agent", "Unknown")
+            log_visit(ip, "LocalHost" if "localhost" in self.headers.get("Host", "") else "Direct", ua)
 
         # ── Serve static files as usual ───────────────────────────────────────
         super().do_GET()
