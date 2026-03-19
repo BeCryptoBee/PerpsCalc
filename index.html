@@ -2006,22 +2006,36 @@
         if (!isNaN(fdv)) PERPS[id].fdv = fdv;
         if (!isNaN(alloc)) PERPS[id].alloc = alloc;
         if (!isNaN(pts)) PERPS[id].points = pts;
-        // reset live state to new defaults
-        state[id] = { fdv: PERPS[id].fdv, alloc: PERPS[id].alloc, points: PERPS[id].points };
-        onFdv(id, PERPS[id].fdv);
-        onAlc(id, PERPS[id].alloc);
-        onPts(id, PERPS[id].points);
+
+        // Preserve yourPoints while resetting to new defaults
+        const currentYPs = state[id] ? state[id].yourPoints : 0;
+        state[id] = {
+          ...state[id],
+          fdv: PERPS[id].fdv,
+          alloc: PERPS[id].alloc,
+          points: PERPS[id].points,
+          yourPoints: currentYPs
+        };
       });
+
+      // Global UI Refresh
+      renderAll();
+      bindTooltips();
+
       // persist
       const saved = {};
       allIds.forEach(id => {
         saved[id] = { fdv: PERPS[id].fdv, alloc: PERPS[id].alloc, points: PERPS[id].points };
       });
       try { localStorage.setItem('perps-cfg', JSON.stringify(saved)); } catch (e) { }
+
       // flash saved message
       const msg = document.getElementById('cfg-saved-msg');
       msg.classList.add('show');
-      setTimeout(() => msg.classList.remove('show'), 2000);
+      setTimeout(() => {
+        msg.classList.remove('show');
+        closeConfig();
+      }, 700);
     }
 
     function hardResetConfig() {
