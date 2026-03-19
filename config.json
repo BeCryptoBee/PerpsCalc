@@ -11,7 +11,9 @@
         "fdv": 600,
         "alloc": 10,
         "points": 8,
-        "status": "tge_soon"
+        "status": "tge_soon",
+        "link": "https://pro.edgex.exchange/en-US/referral/764955352",
+        "link_text": "Commission rate 10%"
     },
     {
         "id": "nado",
@@ -24,8 +26,14 @@
         "id": "ethereal",
         "fdv": 150,
         "alloc": 20,
-        "points": 6500,
-        "status": "active"
+        "points": 10000,
+        "status": "active",
+        "link": "https://app.ethereal.trade/?ref=41K66OX8B0GN",
+        "refs": [
+            "https://app.ethereal.trade/?ref=TXNUYFYHDX3W",
+            "https://app.ethereal.trade/?ref=6MCTF3GC9ZUT",
+            "https://app.ethereal.trade/?ref=TT25OQITSM8N"
+        ]
     },
     {
         "id": "extended",
@@ -39,7 +47,8 @@
         "fdv": 150,
         "alloc": 28,
         "points": 5,
-        "status": "active"
+        "status": "active",
+        "link": "https://grvt.io/?ref=KNE26J3"
     },
     {
         "id": "o1exchange",

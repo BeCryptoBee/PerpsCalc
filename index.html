@@ -1360,10 +1360,30 @@
         /* Reduced top padding from 15px */
       }
     }
+
+    /* ─── CURSOR TOOLTIP ─── */
+    #cursor-tooltip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      background: #1a1e2a;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 6px 13px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+      display: none;
+      box-shadow: 0 4px 20px rgba(245, 197, 24, 0.18);
+    }
   </style>
 </head>
 
 <body>
+
+  <div id="cursor-tooltip"></div>
 
   <header class="header">
     <div class="header-inner">
@@ -2064,6 +2084,7 @@
                 PERPS[c.id].statusLabel = labels[c.status] || 'Active';
               }
               if (c.link !== undefined) PERPS[c.id].link = c.link;
+              if (c.link_text !== undefined) PERPS[c.id].linkText = c.link_text;
             }
           });
         }
@@ -2079,6 +2100,31 @@
 
       // 3. One single render to provide a smooth load experience
       renderAll();
+      bindTooltips();
+    }
+
+    // ─── CURSOR TOOLTIP ──────────────────────────────────────────────────────
+    const _tooltip = document.getElementById('cursor-tooltip');
+    document.addEventListener('mousemove', e => {
+      _tooltip.style.left = (e.clientX + 16) + 'px';
+      _tooltip.style.top = (e.clientY - 10) + 'px';
+    });
+
+    function bindTooltips() {
+      document.querySelectorAll('.proto-info.has-link').forEach(el => {
+        const row = el.closest('[id^="row-"]');
+        if (!row) return;
+        const id = row.id.replace('row-', '');
+        const txt = PERPS[id] && PERPS[id].linkText;
+        if (!txt) return;
+        el.addEventListener('mouseenter', () => {
+          _tooltip.textContent = txt;
+          _tooltip.style.display = 'block';
+        });
+        el.addEventListener('mouseleave', () => {
+          _tooltip.style.display = 'none';
+        });
+      });
     }
 
     init();
