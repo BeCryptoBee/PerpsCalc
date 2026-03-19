@@ -190,6 +190,5 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 init_db()
 print(f"✅  Perps Dashboard  → http://localhost:{PORT}")
-print(f"📊  Visitor stats    → http://localhost:{PORT}/stats?key={STATS_KEY}")
 with socketserver.TCPServer(("", PORT), Handler) as httpd:
     httpd.serve_forever()
