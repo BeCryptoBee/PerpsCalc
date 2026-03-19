@@ -2081,17 +2081,11 @@
       renderAll();
     }
 
-    // ─── VISITOR TRACKER (PING) ──────────────────────────────────────────────
-    function pingTracker() {
-      const url = window.location.href;
-      const backend = "http://100.90.155.18:8765/track";
-      fetch(`${backend}?page=${encodeURIComponent(url)}`, { mode: 'no-cors' })
-        .catch(e => console.log("Tracker offline or blocked"));
-    }
-
     init();
-    pingTracker();
   </script>
+
+  <!-- GoatCounter: private analytics, no cookies, no popup -->
+  <script data-goatcounter="https://becryptobee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 
 </html>
