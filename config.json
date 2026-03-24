@@ -1,0 +1,96 @@
+[
+    {
+        "id": "variational",
+        "fdv": 300,
+        "alloc": 20,
+        "points": 9.5,
+        "status": "active",
+        "link": "https://omni.variational.io/"
+    },
+    {
+        "id": "edgex",
+        "fdv": 600,
+        "alloc": 5,
+        "points": 14,
+        "status": "tge_soon",
+        "link": "https://pro.edgex.exchange/en-US/referral/764955352",
+        "link_text": "Commission rate 10%"
+    },
+    {
+        "id": "nado",
+        "fdv": 1000,
+        "alloc": 10,
+        "points": 30,
+        "status": "active",
+        "link": "https://app.nado.xyz/"
+    },
+    {
+        "id": "ethereal",
+        "fdv": 150,
+        "alloc": 15,
+        "points": 10000,
+        "status": "active",
+        "link": "https://app.ethereal.trade/?ref=41K66OX8B0GN",
+        "refs": [
+            "https://app.ethereal.trade/?ref=TXNUYFYHDX3W",
+            "https://app.ethereal.trade/?ref=6MCTF3GC9ZUT",
+            "https://app.ethereal.trade/?ref=TT25OQITSM8N"
+        ]
+    },
+    {
+        "id": "extended",
+        "fdv": 200,
+        "alloc": 25,
+        "points": 50,
+        "status": "active",
+        "link": "https://app.extended.exchange/"
+    },
+    {
+        "id": "grvt",
+        "fdv": 150,
+        "alloc": 28,
+        "points": 5,
+        "status": "active",
+        "link": "https://grvt.io/?ref=KNE26J3"
+    },
+    {
+        "id": "o1exchange",
+        "fdv": 75,
+        "alloc": 10,
+        "points": 10,
+        "status": "active",
+        "link": "https://01.xyz/ref/019c4282-f296-72cb-8537-33ac3912c547"
+    },
+    {
+        "id": "pacifica",
+        "fdv": 100,
+        "alloc": 15,
+        "points": 300,
+        "status": "active",
+        "link": "https://app.pacifica.fi/"
+    },
+    {
+        "id": "ostium",
+        "fdv": 200,
+        "alloc": 15,
+        "points": 50,
+        "status": "active",
+        "link": "https://app.ostium.com/trade"
+    },
+    {
+        "id": "hibachi",
+        "fdv": 100,
+        "alloc": 15,
+        "points": 52,
+        "status": "active",
+        "link": "https://hibachi.xyz/trade"
+    },
+    {
+        "id": "backpack",
+        "fdv": 400,
+        "alloc": 24,
+        "points": 420,
+        "status": "late",
+        "link": "https://backpack.exchange/"
+    }
+]

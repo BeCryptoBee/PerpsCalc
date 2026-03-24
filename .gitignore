@@ -1,0 +1,5 @@
+visits.db
+.agent/
+.claude/
+__pycache__/
+*.pyc

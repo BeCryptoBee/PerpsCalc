@@ -1,0 +1,3090 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perps Calc</title>
+  <link rel="icon" type="image/png"
+    href="https://images.vexels.com/media/users/3/235199/isolated/preview/2c46a957f757358d387baf0671701af5-flying-color-stroke-honey-bee.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base: #0d0f14;
+      --bg-card: #13161f;
+      --bg-input: #1a1e2a;
+      --bg-hover: #1e2330;
+      --border: #252a38;
+      --border-acc: #2e3548;
+      --accent: #f5c518;
+      --accent2: #ff9d00;
+      --green: #39d98a;
+      --red: #ff4f4f;
+      --blue: #4f8fff;
+      --purple: #a855f7;
+      --text: #f1f3fa;
+      --muted: #9ca3af;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --perp-grid: 237px 185px 185px 185px 100px 100px 100px 80px;
+
+      /* Tier colors */
+      --tier1: #f5c518;
+      --tier2: #4f8fff;
+      --tier3: #6b7280;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-base);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── BG OVERLAY ─── */
+    #bg-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    /* Ensure all page content is above bg overlay */
+    .header, .formula-bar, .container, .perp-modal-overlay, #cursor-tooltip {
+      position: relative;
+      z-index: 2;
+    }
+    .header { z-index: 100; }
+    .perp-modal-overlay { z-index: 2000; }
+    .bg-picker { z-index: 999; }
+    #cursor-tooltip { z-index: 9999; }
+
+    /* BG: Large hexagons + golden glow spots */
+    #bg-overlay.active {
+      background:
+        radial-gradient(circle at 15% 25%, rgba(245, 197, 24, 0.07) 0%, transparent 35%),
+        radial-gradient(circle at 85% 55%, rgba(245, 197, 24, 0.05) 0%, transparent 30%),
+        radial-gradient(circle at 50% 85%, rgba(79, 143, 255, 0.04) 0%, transparent 25%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='200' viewBox='0 0 112 200'%3E%3Cpath d='M56 132L0 100L0 32L56 0L112 32L112 100L56 132Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3Cpath d='M56 200L0 168L0 100L56 68L112 100L112 168L56 200Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: 100% 100%, 100% 100%, 100% 100%, 112px 168px;
+      background-position: center;
+      opacity: 0.2;
+    }
+
+    .bg-picker { display: none;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      background: #0f1219;
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 24px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 50%, rgba(245, 197, 24, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 85% 50%, rgba(245, 197, 24, 0.04) 0%, transparent 40%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='200' viewBox='0 0 112 200'%3E%3Cpath d='M56 132L0 100L0 32L56 0L112 32L112 100L56 132Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3Cpath d='M56 200L0 168L0 100L56 68L112 100L112 168L56 200Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: 100% 100%, 100% 100%, 112px 168px;
+      background-position: center;
+      opacity: 0.15;
+      z-index: 0;
+    }
+    .header > * { position: relative; z-index: 1; }
+
+    .header-inner {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      text-align: left;
+      flex: 1;
+      /* Allow stretching to center content */
+      column-gap: 24px;
+      max-width: 1440px;
+      /* Match container */
+      margin: 0 auto;
+    }
+
+    .header-text-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .user-branding {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      margin-bottom: -2px;
+      text-transform: none;
+      line-height: 1.1;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    .header-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.1;
+    }
+
+    .hive-hex {
+      width: 44px;
+      height: 48px;
+      background: var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 6px;
+    }
+
+    .hive-hex img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Social Links in Header */
+    .header-socials {
+      position: absolute;
+      right: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .social-link {
+      width: 40px;
+      height: 40px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+
+    .social-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .social-link svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* Responsive styles moved to end for precedence */
+
+    /* ─── FORMULA BAR ─── */
+    .formula-bar {
+      background: #0f1219;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+    .formula-bar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='200' viewBox='0 0 112 200'%3E%3Cpath d='M56 132L0 100L0 32L56 0L112 32L112 100L56 132Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3Cpath d='M56 200L0 168L0 100L56 68L112 100L112 168L56 200Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: 112px 168px;
+      background-position: center;
+      opacity: 0.12;
+      z-index: 0;
+    }
+    .formula-bar > * { position: relative; z-index: 1; }
+
+    .formula-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      flex-shrink: 0;
+    }
+
+    .formula-text {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .formula-text b {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Deleted stale formula-note styles */
+
+    /* ─── MAIN ─── */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px 24px;
+    }
+
+    /* ─── TIER HEADER ─── */
+    .tier-section {
+      margin-bottom: 36px;
+    }
+
+    .tier-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .tier-pill {
+      padding: 6px 18px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .tier1 .tier-pill {
+      background: rgba(245, 197, 24, 0.12);
+      color: var(--tier1);
+      border: 1px solid rgba(245, 197, 24, 0.25);
+    }
+
+    .tier2 .tier-pill {
+      background: rgba(79, 143, 255, 0.12);
+      color: var(--tier2);
+      border: 1px solid rgba(79, 143, 255, 0.25);
+    }
+
+    .tier3 .tier-pill {
+      background: rgba(107, 114, 128, 0.12);
+      color: var(--tier3);
+      border: 1px solid rgba(107, 114, 128, 0.25);
+    }
+
+    .tier-desc {
+      font-size: 15px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .tier-line {
+      flex: none;
+      /* Fixed width */
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── TABLE COLUMNS HEADER ─── */
+    .table-head {
+      display: grid;
+      grid-template-columns: var(--perp-grid);
+      column-gap: 24px;
+      /* Fixed identical gaps */
+      justify-content: start;
+      padding: 0 22px 0 24px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+
+    .th:first-child {
+      padding-left: 0;
+    }
+
+    .th {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      text-align: left;
+      /* Protocol header stays Left */
+    }
+
+    .th:nth-child(n+2) {
+      text-align: left;
+    }
+
+    .th.right {
+      text-align: right;
+    }
+
+    /* ─── PERP ROW ─── */
+    .perp-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      overflow: hidden;
+      transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+    }
+
+    .perp-row:hover {
+      border-color: var(--border-acc);
+      box-shadow: 0 4px 28px rgba(0, 0, 0, 0.32);
+      transform: translateY(-1px);
+    }
+
+    /* left accent bar by tier */
+    .perp-row.t1 {
+      border-left: 3px solid rgba(245, 197, 24, 0.4);
+    }
+
+    .perp-row.t2 {
+      border-left: 3px solid rgba(79, 143, 255, 0.4);
+    }
+
+    .perp-row.t3 {
+      border-left: 3px solid rgba(107, 114, 128, 0.3);
+    }
+
+    .perp-main {
+      display: grid;
+      grid-template-columns: var(--perp-grid);
+      column-gap: 24px;
+      justify-content: start;
+      align-items: center;
+      padding: 20px 22px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+      justify-self: end;
+      flex-shrink: 0;
+      width: 80px;
+    }
+
+    /* Protocol info */
+    .proto-info {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      justify-self: start;
+      padding-left: 0;
+      transition: all 0.2s;
+      border-radius: var(--radius-sm);
+    }
+
+    .proto-info[onclick]:hover {
+      background: rgba(245, 197, 24, 0.08);
+      /* Slightly brighter background */
+      box-shadow: 0 0 30px rgba(245, 197, 24, 0.15);
+      /* More diffuse and brighter glow */
+      transform: translateX(3px);
+      /* Slightly more pronounced move */
+    }
+
+    .proto-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .proto-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .proto-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .proto-stage {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* Status badge */
+    .status-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      margin-left: 5px;
+      vertical-align: middle;
+    }
+
+    .st-active {
+      background: rgba(57, 217, 138, 0.10);
+      color: var(--green);
+      border: 1px solid rgba(57, 217, 138, 0.2);
+    }
+
+    .st-tge_soon {
+      background: rgba(255, 157, 0, 0.12);
+      color: var(--accent2);
+      border: 1px solid rgba(255, 157, 0, 0.25);
+    }
+
+    .st-late {
+      background: rgba(255, 79, 79, 0.10);
+      color: var(--red);
+      border: 1px solid rgba(255, 79, 79, 0.2);
+    }
+
+    /* ─── INPUT GROUP ─── */
+    .inp-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .inp-label {
+      display: none;
+      /* Hidden on desktop, shown on mobile */
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .inp-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      /* Minimal gap as requested */
+      margin-top: 6px;
+      justify-content: flex-start;
+    }
+
+    /* Custom range slider */
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      flex: none;
+      /* Fixed width */
+      height: 3px;
+      border-radius: 4px;
+      background: var(--bg-input);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .inp-row input[type="range"] {
+      -webkit-appearance: none;
+      width: 40%;
+      /* Reduced by 30% from 40% */
+
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      outline: none;
+      transition: background 0.2s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid var(--bg-card);
+      box-shadow: 0 0 5px rgba(245, 197, 24, 0.35);
+      transition: box-shadow 0.15s, transform 0.1s;
+    }
+
+    input[type="range"]:hover::-webkit-slider-thumb {
+      box-shadow: 0 0 10px rgba(245, 197, 24, 0.6);
+      transform: scale(1.15);
+    }
+
+    input[type="range"]:active::-webkit-slider-thumb {
+      transform: scale(1.25);
+    }
+
+    /* Styled number input — no spin arrows */
+    .num-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 6px 10px;
+      width: 105px !important;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .num-input::-webkit-outer-spin-button,
+    .num-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+
+    .num-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(245, 197, 24, 0.12);
+    }
+
+    .inp-value-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      /* Prevent squashing */
+      justify-content: flex-end;
+      width: auto;
+      flex-shrink: 0;
+      white-space: nowrap !important;
+      /* Force no wrap for unit */
+    }
+
+    .inp-unit {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    /* ─── PRICE CELL ─── */
+    .price-cell {
+      text-align: right;
+      padding-right: 0;
+    }
+
+    .price-big {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+      display: inline-block;
+    }
+
+    .price-small {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0.4;
+        transform: scale(0.93);
+      }
+
+      60% {
+        transform: scale(1.04);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .price-pop {
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Only protocol blocks with links get the hover glow */
+    .proto-info {
+      transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+      border-radius: var(--radius-sm);
+      padding: 4px 8px;
+      margin: -4px -8px;
+    }
+
+    .proto-info.has-link {
+      cursor: pointer;
+    }
+
+    .proto-info.has-link:hover {
+      background: rgba(255, 255, 255, 0.04);
+      box-shadow: 0 0 20px 5px rgba(245, 197, 24, 0.08);
+      /* Soft blurred glow */
+      transform: translateY(-1.5px);
+    }
+
+    /* ─── EXPAND BUTTON ─── */
+    .expand-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      transition: all 0.2s;
+      justify-self: end;
+    }
+
+    .expand-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(245, 197, 24, 0.06);
+    }
+
+    .expand-btn.open {
+      transform: rotate(180deg);
+      border-color: rgba(245, 197, 24, 0.5);
+      color: var(--accent);
+    }
+
+    /* ─── DETAILS PANEL ─── */
+    .perp-details {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 16px 18px 18px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .perp-details.open {
+      display: block;
+      animation: slideDown 0.22s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .details-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 13px;
+    }
+
+    .d-chip {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 13px;
+      min-width: 110px;
+    }
+
+    .d-chip-label {
+      font-size: 9.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .d-chip-val {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .d-chip-val.accent {
+      color: var(--accent);
+    }
+
+    .conditions-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .cond-tag {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 11px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .cond-tag::before {
+      content: '›  ';
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .live-formula {
+      background: #0b0d11;
+      border: 1px dashed var(--border-acc);
+      border-radius: var(--radius-sm);
+      padding: 9px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'Courier New', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .live-formula .fv {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .row-footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 11px;
+    }
+
+    .reset-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      padding: 4px 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .reset-btn:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+    }
+
+    .ref-tag {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ref-tag span {
+      color: var(--accent);
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align: center;
+      padding: 12px 28px 16px;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .footer b {
+      color: var(--accent);
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-base);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-acc);
+      border-radius: 3px;
+    }
+
+    /* ─── CONFIG BUTTON ─── */
+    .cfg-btn {
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 8px 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+
+    .reset-row-btn {
+      display: flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .reset-row-btn:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: rgba(255, 157, 0, 0.06);
+    }
+
+    .cfg-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(245, 197, 24, 0.06);
+    }
+
+    /* ─── CONFIG MODAL ─── */
+    .cfg-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 200;
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 60px;
+    }
+
+    .cfg-overlay.open {
+      display: flex;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0
+      }
+
+      to {
+        opacity: 1
+      }
+    }
+
+    .cfg-modal {
+      background: #13161f;
+      border: 1px solid var(--border-acc);
+      border-radius: var(--radius);
+      width: 820px;
+      max-width: calc(100vw - 32px);
+      max-height: calc(100vh - 80px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    .cfg-head {
+      display: flex;
+      align-items: center;
+      justify-content: start;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .cfg-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .cfg-title span {
+      color: var(--accent);
+    }
+
+    .cfg-close {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+
+    .cfg-close:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .cfg-body {
+      overflow-y: auto;
+      padding: 16px 20px;
+      flex: none;
+      /* Fixed width */
+    }
+
+    .cfg-note {
+      font-size: 11.5px;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding: 8px 12px;
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent);
+    }
+
+    .cfg-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .cfg-table thead tr {
+      border-bottom: 1px solid var(--border-acc);
+    }
+
+    .cfg-table th {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    .cfg-table td {
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    .cfg-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .cfg-proto-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .cfg-tier-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+      margin-left: 5px;
+      text-transform: uppercase;
+    }
+
+    .tag-t1 {
+      background: rgba(245, 197, 24, 0.12);
+      color: var(--accent);
+    }
+
+    .tag-t2 {
+      background: rgba(79, 143, 255, 0.12);
+      color: var(--blue);
+    }
+
+    .tag-t3 {
+      background: rgba(107, 114, 128, 0.12);
+      color: var(--muted);
+    }
+
+    .cfg-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 8px;
+      width: 90px;
+      text-align: right;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .cfg-input::-webkit-outer-spin-button,
+    .cfg-input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .cfg-input:focus {
+      border-color: var(--accent);
+    }
+
+    .cfg-unit {
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: 4px;
+    }
+
+    /* computed price preview */
+    .cfg-price-preview {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent);
+      text-align: right;
+      min-width: 80px;
+    }
+
+    .cfg-foot {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .cfg-apply {
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #0d0f14;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 8px 20px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .cfg-apply:hover {
+      opacity: 0.88;
+    }
+
+    .cfg-reset-all {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .cfg-reset-all:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .cfg-saved-msg {
+      font-size: 11px;
+      color: var(--green);
+      margin-left: auto;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .cfg-saved-msg.show {
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+
+      /* Mobile Global overrides */
+      html,
+      body {
+        overflow-x: hidden !important;
+        width: 100% !important;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        display: flex !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 12px 16px !important;
+        position: relative !important;
+      }
+
+      .header-inner {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding-top: 0 !important;
+        /* Removed padding to allow flex centering */
+        margin: 20px 0 !important;
+        gap: 12px !important;
+        width: 100% !important;
+      }
+
+      .header-text-stack {
+        align-items: flex-start !important;
+        text-align: left !important;
+        flex-shrink: 0 !important;
+      }
+
+      .user-branding {
+        font-size: 24px !important;
+        text-align: left !important;
+        margin-bottom: 0 !important;
+        white-space: nowrap !important;
+      }
+
+      .header-title {
+        font-size: 13px !important;
+        justify-content: flex-start !important;
+        white-space: nowrap !important;
+      }
+
+      .header-socials {
+        position: absolute !important;
+        right: 12px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        margin-top: 0 !important;
+        justify-content: flex-end !important;
+        width: auto !important;
+        z-index: 110 !important;
+        gap: 8px !important;
+      }
+
+      .social-link {
+        width: 28px !important;
+        height: 28px !important;
+      }
+
+      .cfg-btn {
+        position: static !important;
+        padding: 0 !important;
+        background: none !important;
+        border: none !important;
+        font-size: 16px !important;
+        margin-right: 4px !important;
+      }
+
+      .cfg-btn span {
+        display: inline !important;
+      }
+
+      .container {
+        padding: 12px 10px !important;
+        width: 100% !important;
+        overflow-x: hidden !important;
+      }
+
+      .formula-bar {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        font-size: 11px !important;
+        padding: 12px 16px !important;
+        width: 100% !important;
+        text-align: center !important;
+      }
+
+      .formula-text {
+        white-space: normal !important;
+        /* Allow wrap for long formula on small mobile */
+        width: 100% !important;
+      }
+
+      .table-head {
+        display: none !important;
+      }
+
+      .perp-row {
+        width: 100% !important;
+        margin: 0 0 10px 0 !important;
+        border-radius: 12px !important;
+      }
+
+      .perp-main {
+        display: flex !important;
+        flex-direction: column !important;
+        padding: 20px 20px 10px 20px !important;
+        /* Reduced bottom padding */
+        height: auto !important;
+        width: 100% !important;
+        position: relative !important;
+      }
+
+      .proto-info {
+        width: 100%;
+        width: 100% !important;
+        margin-bottom: 20px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        /* Center logo in mobile */
+        gap: 12px !important;
+        text-align: left !important;
+        padding-left: 0 !important;
+      }
+
+      .proto-name {
+        font-size: 18px !important;
+      }
+
+      .inp-group {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        margin-bottom: 16px !important;
+      }
+
+      .inp-label {
+        display: block !important;
+        font-size: 11px !important;
+        margin-bottom: 6px !important;
+        text-align: center !important;
+      }
+
+      .inp-row {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 12px !important;
+        align-items: center !important;
+        width: 100% !important;
+        justify-content: center !important;
+      }
+
+      .inp-row input[type="range"] {
+        flex: 1 !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+      }
+
+      .inp-value-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        justify-content: flex-end !important;
+        width: auto !important;
+        flex-shrink: 0 !important;
+      }
+
+
+
+      .num-input {
+        width: 68px !important;
+        border-radius: 6px !important;
+      }
+
+      .price-cell {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+        text-align: center !important;
+        border-top: 1px solid var(--border) !important;
+        padding-top: 15px !important;
+        padding-right: 0 !important;
+        /* Force no padding */
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+        /* Reduced bottom gap */
+      }
+
+      .price-big {
+        font-size: 28px !important;
+        display: block !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+      }
+
+      .reset-row-btn {
+        display: flex !important;
+        position: absolute !important;
+        top: 16px !important;
+        right: 56px !important;
+        background: none !important;
+        border: 1px solid var(--border) !important;
+        border-radius: var(--radius-sm) !important;
+        color: var(--muted) !important;
+        cursor: pointer !important;
+        width: 30px !important;
+        height: 30px !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 14px !important;
+        z-index: 5 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        transition: all 0.2s !important;
+        transform: none !important;
+        /* Reset desktop translateMiddle */
+      }
+
+      .expand-btn {
+        display: flex !important;
+        position: absolute !important;
+        top: 16px !important;
+        right: 16px !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        z-index: 5 !important;
+      }
+
+      .point-group {
+        margin-top: 8px !important;
+        /* Reduced top gap from 15px */
+        border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding-top: 8px !important;
+        /* Reduced top padding from 15px */
+      }
+    }
+
+    /* ─── CURSOR TOOLTIP ─── */
+    #cursor-tooltip {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      background: #1a1e2a;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      padding: 6px 13px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+      display: none;
+      box-shadow: 0 4px 20px rgba(245, 197, 24, 0.18);
+    }
+
+    /* ─── PERP MODAL ─── */
+    .perp-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .perp-modal-overlay.open {
+      display: flex;
+      animation: modalFadeIn 0.22s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .perp-modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border-acc);
+      border-radius: 20px;
+      max-width: 920px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(245, 197, 24, 0.08);
+      animation: modalSlideUp 0.25s ease;
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .perp-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .perp-modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .perp-modal-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .perp-modal-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .perp-modal-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .perp-modal-stage {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .perp-modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .perp-modal-close:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(245, 197, 24, 0.08);
+    }
+
+    .perp-modal-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+
+    .perp-modal-left {
+      padding: 24px 28px;
+      border-right: 1px solid var(--border);
+    }
+
+    .perp-modal-right {
+      padding: 24px 28px;
+    }
+
+    .perp-modal-section-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: #c8cdd8;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 18px;
+    }
+
+    /* Modal sliders — inline: label + range + input on one row */
+    .modal-slider-group {
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-slider-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .modal-slider-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #b8bfcc;
+      white-space: nowrap;
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    /* Brighter range sliders */
+    .modal-slider-group input[type="range"],
+    .perp-modal-left input[type="range"] {
+      flex: 1;
+      min-width: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 5px;
+      background: #3a4058;
+      border-radius: 3px;
+      outline: none;
+      margin: 0;
+    }
+
+    .modal-slider-group input[type="range"]::-webkit-slider-thumb,
+    .perp-modal-left input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid #0d0f14;
+      box-shadow: 0 0 6px rgba(245, 197, 24, 0.4);
+      margin-top: -5.5px;
+    }
+
+    .modal-slider-group input[type="range"]::-moz-range-thumb,
+    .perp-modal-left input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      border: 2px solid #0d0f14;
+      box-shadow: 0 0 6px rgba(245, 197, 24, 0.4);
+    }
+
+    .modal-slider-group input[type="range"]::-webkit-slider-runnable-track,
+    .perp-modal-left input[type="range"]::-webkit-slider-runnable-track {
+      height: 5px;
+      border-radius: 3px;
+      background: #3a4058;
+    }
+
+    .modal-slider-group .inp-value-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .modal-slider-group .num-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 6px 8px;
+      width: 80px;
+      font-family: inherit;
+    }
+
+    .modal-slider-group .inp-unit {
+      font-size: 12px;
+      color: #b8bfcc;
+      font-weight: 600;
+    }
+
+    /* Modal your-points input */
+    .modal-your-points {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    .modal-your-points .modal-slider-label {
+      margin-bottom: 8px;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .modal-your-points input {
+      background: rgba(245, 197, 24, 0.06);
+      border: 1.5px solid rgba(245, 197, 24, 0.35);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 11px 12px;
+      width: 100%;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .modal-your-points input::placeholder {
+      color: rgba(245, 197, 24, 0.3);
+    }
+
+    .modal-your-points input:focus {
+      outline: none;
+      border-color: var(--accent);
+      border-style: solid;
+      background: rgba(245, 197, 24, 0.1);
+    }
+
+    /* Right side - results card with honeycomb bg */
+    .modal-result-card {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      overflow: hidden;
+      background: #0b0d11;
+    }
+
+    .modal-result-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 66L0 50L0 16L28 0L56 16L56 50L28 66Z' fill='none' stroke='%23f5c518' stroke-width='1.5'/%3E%3Cpath d='M28 100L0 84L0 50L28 34L56 50L56 84L28 100Z' fill='none' stroke='%23f5c518' stroke-width='1.5'/%3E%3C/svg%3E");
+      background-size: 56px 84px;
+      background-position: center center;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .modal-result-card>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Logo: absolute to the result card, left side */
+    .modal-top-logo {
+      position: absolute;
+      left: 18px;
+      top: 22px;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-acc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .modal-top-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-top-name {
+      font-weight: 800;
+      font-size: 24px;
+      color: var(--text);
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    /* Metrics list (FDV, Alloc, Points) — centered */
+    .modal-metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin: 0 0 16px;
+      align-items: center;
+    }
+
+    .modal-metric-row {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 12px;
+      align-items: baseline;
+    }
+
+    .modal-metric-label {
+      font-size: 11px;
+      color: #b8bfcc;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .modal-metric-val {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: left;
+    }
+
+    /* Price hero — center of right panel */
+    .modal-price-hero {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .modal-price-hero-label {
+      font-size: 12px;
+      color: #b8bfcc;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .modal-price-hero-val {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+    }
+
+    .modal-formula {
+      text-align: center;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      color: #b8bfcc;
+      margin-bottom: 18px;
+      padding: 0 8px;
+    }
+
+    .modal-formula .fv {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Est value block */
+    .modal-est-value {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(245, 197, 24, 0.1);
+      border: 1px solid rgba(245, 197, 24, 0.28);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .modal-est-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-est-label {
+      font-size: 12px;
+      color: #b8bfcc;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .modal-est-tokens {
+      font-size: 11px;
+      color: #b8bfcc;
+      margin-top: 2px;
+    }
+
+    .modal-est-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    /* Bottom area: time-remaining + conditions stacked left */
+    .modal-bottom-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-time-remaining {
+      background: rgba(26, 30, 42, 0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 9px 12px;
+    }
+
+    .modal-time-remaining .modal-chip-label {
+      font-size: 10px;
+      color: #b8bfcc;
+    }
+
+    .modal-time-remaining .modal-chip-val {
+      font-size: 13px;
+    }
+
+    .modal-conditions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .modal-conditions .cond-tag {
+      font-size: 12px;
+      padding: 5px 9px;
+    }
+
+    /* Share button */
+    .modal-share-btn {
+      width: 100%;
+      padding: 11px;
+      background: rgba(245, 197, 24, 0.12);
+      border: 1px solid rgba(245, 197, 24, 0.3);
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+
+    .modal-share-btn:hover {
+      background: rgba(245, 197, 24, 0.2);
+      border-color: rgba(245, 197, 24, 0.5);
+    }
+
+    .modal-share-btn.copied {
+      background: rgba(57, 217, 138, 0.15);
+      border-color: rgba(57, 217, 138, 0.4);
+      color: var(--green);
+    }
+
+    .modal-reset-btn {
+      margin-top: 14px;
+      padding: 9px 18px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .modal-reset-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Watermark for screenshot */
+    .modal-watermark {
+      text-align: center;
+      font-size: 11px;
+      color: #b8bfcc;
+      margin-top: 14px;
+      opacity: 0.7;
+    }
+
+    /* Responsive modal */
+    @media (max-width: 768px) {
+      .perp-modal-body {
+        grid-template-columns: 1fr;
+      }
+
+      .perp-modal-left {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 18px 20px;
+      }
+
+      .perp-modal-right {
+        padding: 18px 20px;
+      }
+
+      .perp-modal {
+        border-radius: 16px;
+        max-height: 95vh;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="bg-overlay"></div>
+  <div id="cursor-tooltip"></div>
+
+  <!-- Perp Detail Modal -->
+  <div class="perp-modal-overlay" id="perp-modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="perp-modal">
+      <div class="perp-modal-header">
+        <div class="perp-modal-header-left">
+          <div class="perp-modal-logo" id="modal-logo"></div>
+          <div>
+            <div class="perp-modal-name" id="modal-name"></div>
+            <div class="perp-modal-stage" id="modal-stage"></div>
+          </div>
+        </div>
+        <button class="perp-modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="perp-modal-body">
+        <!-- Left: Sliders (inline: label + range + input) -->
+        <div class="perp-modal-left">
+          <div class="perp-modal-section-title">Parameters</div>
+
+          <div class="modal-slider-group">
+            <div class="modal-slider-label">FDV</div>
+            <input type="range" id="m-fdv-r" min="10" max="1000" step="10" oninput="onModalFdv(this.value)" />
+            <div class="inp-value-row">
+              <input type="number" id="m-fdv-n" class="num-input" inputmode="decimal"
+                oninput="onModalFdv(this.value)" />
+              <span class="inp-unit">$M</span>
+            </div>
+          </div>
+
+          <div class="modal-slider-group">
+            <div class="modal-slider-label">Allocation</div>
+            <input type="range" id="m-alc-r" min="1" max="80" step="0.5" oninput="onModalAlc(this.value)" />
+            <div class="inp-value-row">
+              <input type="number" id="m-alc-n" class="num-input" inputmode="decimal"
+                oninput="onModalAlc(this.value)" />
+              <span class="inp-unit">%</span>
+            </div>
+          </div>
+
+          <div class="modal-slider-group">
+            <div class="modal-slider-label">Total Points</div>
+            <input type="range" id="m-pts-r" min="0.1" max="100" step="0.1" oninput="onModalPts(this.value)" />
+            <div class="inp-value-row">
+              <input type="number" id="m-pts-n" class="num-input" inputmode="decimal"
+                oninput="onModalPts(this.value)" />
+              <span class="inp-unit">M</span>
+            </div>
+          </div>
+
+          <div class="modal-your-points">
+            <div class="modal-slider-label">ENTER Your Points</div>
+            <input type="text" id="m-ypts" inputmode="numeric" placeholder="Enter amount..."
+              oninput="onModalYourPts(this.value)" onfocus="this.value=this.value.replace(/\u00A0/g,'')"
+              onblur="onModalYourPtsBlur()" />
+          </div>
+
+          <button class="modal-reset-btn" onclick="resetModalPerp()">&#8634; Reset to default</button>
+
+          <!-- Bottom info: time remaining + conditions (in left panel) -->
+          <div class="modal-bottom-info" style="margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
+            <div class="modal-time-remaining" id="modal-time-remaining">
+              <div class="modal-chip-label">Time Remaining</div>
+              <div class="modal-chip-val" id="modal-time-val">—</div>
+            </div>
+            <div class="modal-conditions" id="modal-conditions"></div>
+          </div>
+        </div>
+
+        <!-- Right: Results (shareable) -->
+        <div class="perp-modal-right">
+          <div class="perp-modal-section-title">Calculation Results</div>
+          <div class="modal-result-card" id="modal-share-area">
+            <!-- Logo: absolute left -->
+            <div class="modal-top-logo" id="modal-share-logo"></div>
+            <!-- Name centered -->
+            <div class="modal-top-name" id="modal-share-name"></div>
+            <!-- Metrics centered -->
+            <div class="modal-metrics" id="modal-metrics" style="text-align:center"></div>
+            <!-- Price hero: big centered -->
+            <div class="modal-price-hero">
+              <div class="modal-price-hero-label">Point Price</div>
+              <div class="modal-price-hero-val" id="modal-price-hero-val">$0.00</div>
+            </div>
+            <!-- Formula under price -->
+            <div class="modal-formula" id="modal-formula"></div>
+            <!-- Est value -->
+            <div class="modal-est-value">
+              <div class="modal-est-left">
+                <span class="modal-est-label">Estimated Value</span>
+                <span class="modal-est-tokens" id="modal-est-tokens"></span>
+              </div>
+              <span class="modal-est-val" id="modal-est-val">$0</span>
+            </div>
+            <div class="modal-watermark">Perps Point Cost Calculator &bull; BeCryptoBee</div>
+          </div>
+          <button class="modal-share-btn" id="modal-share-btn" onclick="shareModalAsImage()">
+            &#128203; Copy as Image
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="hive-hex">
+        <img
+          src="https://images.vexels.com/media/users/3/235199/isolated/preview/2c46a957f757358d387baf0671701af5-flying-color-stroke-honey-bee.png"
+          alt="Bee" />
+      </div>
+      <div class="header-text-stack">
+        <div class="user-branding">BeCryptoBee <span
+            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.18</span>
+        </div>
+        <div class="header-title">
+          Perps Point Cost Calculator
+        </div>
+      </div>
+    </div>
+    <div class="header-socials">
+      <a href="https://x.com/Be_CryptoBee" target="_blank" class="social-link" title="Twitter / X">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+        </svg>
+      </a>
+      <a href="https://t.me/BeCryptoBee" target="_blank" class="social-link" title="Telegram">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M11.944 0C5.352 0 0 5.352 0 11.944c0 6.592 5.352 11.944 11.944 11.944 6.592 0 11.944-5.352 11.944-11.944C23.888 5.352 18.536 0 11.944 0zm5.832 8.356c-.164 1.724-1.144 7.544-1.64 10.196-.208 1.12-.616 1.492-1.016 1.528-.868.08-1.528-.572-2.368-1.124-1.316-.864-2.06-1.396-3.332-2.236-1.472-.968-.516-1.5.32-2.368.216-.228 4.028-3.692 4.104-3.996.008-.036.012-.172-.072-.244-.084-.072-.204-.048-.292-.028-.124.028-2.112 1.344-5.952 3.936-.564.388-1.076.58-1.536.568-.508-.012-1.484-.288-2.212-.524-.892-.288-1.604-.444-1.54-.936.032-.256.384-.516 1.056-.784 4.128-1.792 6.876-2.976 8.244-3.552 3.924-1.644 4.74-1.932 5.272-1.94.116-.004.376.024.544.164.14.116.18.272.196.388.016.128.02.404.004.604z" />
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <div class="formula-bar">
+    <button class="cfg-btn" onclick="openConfig()">⚙ <span>Default Options</span></button>
+    <div class="formula-text">
+      📐 Formula: $ / point = <b>(FDV × Allocation%)</b> ÷ <b>Total Points</b>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="container">
+    <div id="perps-root"></div>
+  </div>
+
+  <div class="footer">
+    ⚠️ All figures are estimates based on projected FDV and assumed community allocations. <b>Not financial advice.</b>
+    Do your own research.
+  </div>
+
+  <!-- CONFIG MODAL -->
+  <div class="cfg-overlay" id="cfg-overlay" onclick="if(event.target===this)closeConfig()">
+    <div class="cfg-modal">
+      <div class="cfg-head">
+        <div class="cfg-title">⚙ Default <span>Values</span> Config</div>
+        <button class="cfg-close" onclick="closeConfig()">✕</button>
+      </div>
+      <div class="cfg-body">
+        <div class="cfg-note">Edit the default values for each protocol. Click <b>Apply & Save</b> to persist to
+          localStorage — they will reload automatically next time.</div>
+        <table class="cfg-table">
+          <thead>
+            <tr>
+              <th>Protocol</th>
+              <th>FDV ($M)</th>
+              <th>Alloc (%)</th>
+              <th>Points (M)</th>
+              <th style="text-align:right">$ / point preview</th>
+            </tr>
+          </thead>
+          <tbody id="cfg-tbody"></tbody>
+        </table>
+      </div>
+      <div class="cfg-foot">
+        <button class="cfg-apply" onclick="applyConfig()">✓ Apply &amp; Save</button>
+        <button class="cfg-reset-all" onclick="hardResetConfig()">↺ Reset all to coded defaults</button>
+        <span class="cfg-saved-msg" id="cfg-saved-msg">✓ Saved!</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── DATA ────────────────────────────────────────────────────────────────
+    const TIERS = [
+      {
+        id: 't1',
+        label: 'Tier 1',
+        desc: 'High conviction — stronger fundamentals & traction',
+        ids: ['variational', 'edgex', 'nado'],
+      },
+      {
+        id: 't2',
+        label: 'Tier 2',
+        desc: 'Solid projects with good risk/reward',
+        ids: ['ethereal', 'extended', 'grvt', 'o1exchange', 'backpack'],
+      },
+      {
+        id: 't3',
+        label: 'Tier 3',
+        desc: 'Speculative or cap-reached — monitor only',
+        ids: ['pacifica', 'ostium', 'hibachi'],
+      },
+    ];
+
+    const PERPS = {
+      variational: {
+        name: 'Variational',
+        stage: 'PERP DEX · EVM',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=variational.io&sz=64',
+        fb: 'VR',
+        fdv: 300, alloc: 20, points: 9.5,
+        ptsMax: 50, ptsStep: 0.1,
+        remaining: 'Until Q3 2026',
+        conditions: ['~9.5M total points', '3M retroactive allocation', '~150,000 pts / week', 'Program runs until Q3 2026'],
+        ref: null,
+      },
+      edgex: {
+        name: 'EdgeX',
+        stage: 'PERP DEX · EVM',
+        status: 'final', statusLabel: 'Final Stretch',
+        logo: 'https://www.google.com/s2/favicons?domain=edgex.exchange&sz=64',
+        fb: 'EX',
+        fdv: 600, alloc: 10, points: 8,
+        ptsMax: 40, ptsStep: 0.5,
+        remaining: 'Final stretch before TGE',
+        conditions: ['~8M total points', '7.3M distributed in Season 1', '~250k–300k pts / week pre-TGE', 'Pro-trader focus'],
+        ref: null,
+      },
+      nado: {
+        name: 'Nado',
+        stage: 'PERP DEX · EVM',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://pbs.twimg.com/profile_images/2010908038514032641/5E7RkPLF_400x400.jpg',
+        fb: 'NA',
+        fdv: 1500, alloc: 10, points: 30,
+        ptsMax: 100, ptsStep: 0.5,
+        remaining: 'Growth Stage',
+        conditions: ['~30M total points', '950k–1M pts / week', 'Season 1 + bonus pool', 'Active distribution ongoing'],
+        ref: null,
+      },
+      ethereal: {
+        name: 'Ethereal',
+        stage: 'PERP DEX · EVM',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=ethereal.trade&sz=64',
+        fb: 'ET',
+        fdv: 100, alloc: 20, points: 6500,
+        ptsMax: 20000, ptsStep: 100,
+        remaining: 'No cap announced',
+        conditions: ['~6,500M total points (6.5B)', '~200M pts / week since Cycle 10', 'No distribution limit set', 'EVM-compatible'],
+        ref: null,
+      },
+      extended: {
+        name: 'Extended',
+        stage: 'PERP DEX · STARK',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=extended.exchange&sz=64',
+        fb: 'EX',
+        fdv: 200, alloc: 25, points: 50,
+        ptsMax: 200, ptsStep: 1,
+        remaining: '~8–9 month full run',
+        conditions: ['~50M total points expected', '1.2M pts / week (Season 1 ongoing)', 'Early allocation: 4.3M', 'Estimated 8–9 month full run'],
+        ref: null,
+      },
+      grvt: {
+        name: 'GRVT',
+        stage: 'PERP DEX · EVM',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=grvt.io&sz=64',
+        fb: 'GR',
+        fdv: 150, alloc: 28, points: 5,
+        ptsMax: 30, ptsStep: 0.1,
+        remaining: 'Cap expected at TGE',
+        conditions: ['~5M total points', '100k–150k pts / week', 'Cap expected at TGE'],
+        ref: null,
+      },
+      o1exchange: {
+        name: '01.xyz',
+        stage: 'PERP DEX · SOL',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://pbs.twimg.com/profile_images/1553029460236337152/QjHF5aPb_400x400.jpg',
+        fb: '01',
+        fdv: 150, alloc: 10, points: 40,
+        ptsMax: 150, ptsStep: 1,
+        remaining: 'Ongoing Phases',
+        conditions: ['40M total points confirmed', 'Phased release model', 'Distributed across all phases', 'Ongoing phases active'],
+        ref: null,
+      },
+      pacifica: {
+        name: 'Pacifica',
+        stage: 'PERP DEX · SOL',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=pacifica.fi&sz=64',
+        fb: 'PA',
+        fdv: 100, alloc: 15, points: 300,
+        ptsMax: 1000, ptsStep: 10,
+        remaining: 'High Velocity',
+        conditions: ['~300M total points', '10M pts / week ongoing', 'Accumulated >213M already', 'High velocity accumulation'],
+        ref: null,
+      },
+      ostium: {
+        name: 'Ostium',
+        stage: 'PERP DEX · EVM',
+        status: 'capped', statusLabel: 'Cap Reached',
+        logo: 'https://www.google.com/s2/favicons?domain=ostium.io&sz=64',
+        fb: 'OS',
+        fdv: 200, alloc: 15, points: 35,
+        ptsMax: 100, ptsStep: 0.5,
+        remaining: '⛔ S2 Hard Cap Reached',
+        conditions: ['35M S2 hard cap — REACHED', 'No expansion planned', 'RWA focus: SPX/USD pairs', 'Season 2 closed'],
+        ref: null,
+      },
+      hibachi: {
+        name: 'Hibachi',
+        stage: 'PERP DEX · SOL',
+        status: 'boost', statusLabel: '🔥 Mad March',
+        logo: 'https://www.google.com/s2/favicons?domain=hibachi.xyz&sz=64',
+        fb: 'HI',
+        fdv: 100, alloc: 15, points: 52,
+        ptsMax: 150, ptsStep: 1,
+        remaining: '',
+        conditions: [],
+        ref: null,
+      },
+      backpack: {
+        name: 'Backpack',
+        stage: 'CEX · SOL',
+        status: 'active', statusLabel: 'Active',
+        logo: 'https://www.google.com/s2/favicons?domain=backpack.exchange&sz=64',
+        fb: 'BP',
+        fdv: 200, alloc: 24, points: 420,
+        ptsMax: 1000, ptsStep: 1,
+        remaining: 'Epilogue phase before TGE',
+        conditions: [
+          'Points program runs across Pre-Season + Seasons 1-4',
+          '~300M+ points accumulated across seasons',
+          'Final Epilogue redistribution before snapshot',
+          '24% of token supply allocated to points holders'
+        ],
+        ref: null,
+      },
+    };
+
+    // ─── STATE ───────────────────────────────────────────────────────────────
+    let state = {};
+    function initState() {
+      state = {};
+      Object.keys(PERPS).forEach(id => {
+        const p = PERPS[id];
+        state[id] = {
+          fdv: p.fdv,
+          alloc: p.alloc,
+          points: p.points,
+          yourPoints: 0,
+          status: p.status,
+          statusLabel: p.statusLabel
+        };
+      });
+    }
+
+    // ─── HELPERS ─────────────────────────────────────────────────────────────
+    function calcPrice(id) {
+      const s = state[id];
+      const pts = s.points * 1_000_000;
+      if (!pts) return 0;
+      return (s.fdv * 1_000_000 * s.alloc / 100) / pts;
+    }
+    function fmtPrice(v) {
+      if (v === 0) return '$0.00';
+      if (v >= 1) return '$' + v.toFixed(2);
+
+      // For < $1, show 2 significant digits
+      const fmt = v.toPrecision(2);
+      return '$' + Number(fmt).toString();
+    }
+    function fmtPriceBig(v) {
+      if (v === 0) return '$0';
+      const rounded = Math.round(v).toString();
+      return '$' + rounded.replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0");
+    }
+    console.log('fmtPrice loaded: using 2 decimal places for $1+ and 2 sig digits for <$1');
+
+    function fmtPts(v) {
+      if (v >= 1000) return (v / 1000).toFixed(1) + 'B';
+      return v % 1 === 0 ? v + 'M' : parseFloat(v).toFixed(1) + 'M';
+    }
+    function stClass(s) {
+      return { active: 'st-active', tge_soon: 'st-tge_soon', late: 'st-late' }[s] || 'st-active';
+    }
+    function tierClass(tid) {
+      return { t1: 't1', t2: 't2', t3: 't3' }[tid] || 't3';
+    }
+
+    function formatWithSpaces(n) {
+      if (!n && n !== 0) return '';
+      const parts = n.toString().split('.');
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, "\u00A0"); // non-breaking space
+      return parts.join('.');
+    }
+
+    // ─── RENDER ──────────────────────────────────────────────────────────────
+    function renderPerp(id, tid) {
+      const p = PERPS[id];
+      const s = state[id];
+      const price = calcPrice(id);
+      const tc = tierClass(tid);
+
+      return `
+  <div class="perp-row ${tc}" id="row-${id}">
+    <div class="perp-main" onclick="toggleDetails('${id}')">
+
+      <div class="proto-info ${p.link ? 'has-link' : ''}" ${p.link ? `onclick="event.stopPropagation(); window.open('${p.link}', '_blank')"` : ''}>
+        <div class="proto-logo" id="logo-${id}">
+          <img src="${p.logo}" alt="${p.name}"
+            onerror="this.parentElement.innerHTML='${p.fb}'" />
+        </div>
+        <div style="display: flex; flex-direction: column; justify-content: center;">
+          <div class="proto-name" style="display: flex; align-items: center; gap: 5px;">
+            ${p.name}<span class="status-badge ${stClass(s.status || p.status)}">${(s.statusLabel || p.statusLabel).replace('Final Stretch', 'TGE Soon')}</span>
+          </div>
+          <div class="proto-stage">${p.stage}</div>
+          ${p.link ? `<div class="proto-link" style="font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 700; letter-spacing: 0.5px;">LINK</div>` : ''}
+        </div>
+      </div>
+
+      <!-- FDV -->
+      <div class="inp-group" onclick="event.stopPropagation()">
+        <div class="inp-label">FDV</div>
+        <div class="inp-row">
+          <input type="range" id="fdv-r-${id}" min="10" max="1000" step="10" value="${s.fdv}"
+            oninput="onFdv('${id}',this.value)" />
+          <div class="inp-value-row">
+            <input type="number" id="fdv-n-${id}" class="num-input" value="${s.fdv}"
+              inputmode="decimal" oninput="onFdv('${id}',this.value)" />
+            <span class="inp-unit">$M</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alloc -->
+      <div class="inp-group" onclick="event.stopPropagation()">
+        <div class="inp-label">Allocation</div>
+        <div class="inp-row">
+          <input type="range" id="alc-r-${id}" min="1" max="80" step="0.5" value="${s.alloc}"
+            oninput="onAlc('${id}',this.value)" />
+          <div class="inp-value-row">
+            <input type="number" id="alc-n-${id}" class="num-input" value="${s.alloc}"
+              inputmode="decimal" oninput="onAlc('${id}',this.value)" />
+            <span class="inp-unit">%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Points -->
+      <div class="inp-group" onclick="event.stopPropagation()">
+        <div class="inp-label">Total Points</div>
+        <div class="inp-row">
+          <input type="range" id="pts-r-${id}" min="0.1" max="${p.ptsMax}" step="${p.ptsStep}" value="${s.points}"
+            oninput="onPts('${id}',this.value)" />
+          <div class="inp-value-row">
+            <input type="number" id="pts-n-${id}" class="num-input" value="${s.points}"
+              inputmode="decimal" oninput="onPts('${id}',this.value)" />
+            <span class="inp-unit">M</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="price-cell">
+        <div class="price-big" id="price-${id}">${fmtPrice(price)}</div>
+        <!-- <div class="price-small">per point at TGE</div> -->
+      </div>
+
+      <!-- Your Points -->
+      <div class="inp-group point-group" style="align-items: center; text-align: center;" onclick="event.stopPropagation()">
+        <div class="inp-label">Your Points</div>
+        <div class="inp-row">
+          <input type="text" id="ypts-${id}" class="num-input" value="${s.yourPoints ? formatWithSpaces(s.yourPoints) : ''}"
+            style="text-align: center;"
+            inputmode="numeric" 
+            oninput="onYourPts('${id}',this.value)" 
+            onfocus="onYourPtsFocus(this)"
+            onblur="onYourPtsBlur('${id}',this.value)"
+            placeholder="0" />
+        </div>
+      </div>
+
+      <div class="inp-group value-group" style="align-items: center; text-align: center;">
+        <div class="inp-label">Est. Value</div>
+        <div class="price-big" id="estval-${id}">${fmtPrice(price * (s.yourPoints || 0))}</div>
+      </div>
+
+      <!-- Toggle -->
+      <div class="btn-group">
+        <button class="reset-row-btn" onclick="event.stopPropagation();resetPerp('${id}')">↺</button>
+        <button class="expand-btn" id="btn-${id}"
+          onclick="event.stopPropagation();toggleDetails('${id}')">▾</button>
+      </div>
+
+    </div>
+
+    <!-- DETAILS -->
+    <div class="perp-details" id="det-${id}">
+      <div class="details-chips">
+        <div class="d-chip">
+          <div class="d-chip-label">Time Remaining</div>
+          <div class="d-chip-val">${p.remaining}</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">FDV</div>
+          <div class="d-chip-val" id="dd-fdv-${id}">$${s.fdv}M</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">Allocation</div>
+          <div class="d-chip-val" id="dd-alc-${id}">${s.alloc}%</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">Total Points</div>
+          <div class="d-chip-val" id="dd-pts-${id}">${fmtPts(s.points)}</div>
+        </div>
+        <div class="d-chip">
+          <div class="d-chip-label">$ / Point</div>
+          <div class="d-chip-val accent" id="dd-price-${id}">${fmtPrice(price)}</div>
+        </div>
+      </div>
+
+      <div class="conditions-row">
+        ${p.conditions.map(c => `<span class="cond-tag">${c}</span>`).join('')}
+      </div>
+
+      <div class="live-formula" id="dd-formula-${id}">
+        Price = (<span class="fv">$${s.fdv}M</span> × <span class="fv">${s.alloc}%</span>) ÷ <span class="fv">${fmtPts(s.points)}</span> = <span class="fv">${fmtPrice(price)}</span>
+      </div>
+
+      <div class="row-footer">
+        <button class="reset-btn" onclick="resetPerp('${id}')">↺ Reset to default</button>
+        ${p.ref && p.ref !== 'JOIN' ? `<div class="ref-tag">Ref code: <span>${p.ref}</span></div>` : ''}
+      </div>
+    </div>
+  </div>`;
+    }
+
+    function renderTier(tier) {
+      const perpsHtml = tier.ids.map(id => renderPerp(id, tier.id)).join('');
+      return `
+  <div class="tier-section ${tier.id}">
+    <div class="tier-header">
+      <div class="tier-pill">${tier.label}</div>
+      <div class="tier-desc">${tier.desc}</div>
+      <div class="tier-line"></div>
+    </div>
+    <div class="table-head">
+      <div class="th">Protocol</div>
+      <div class="th">FDV ($M)</div>
+      <div class="th">Allocation (%)</div>
+      <div class="th">Total Points</div>
+      <div class="th right">$ / Point</div>
+      <div class="th" style="text-align:center">Your Points</div>
+      <div class="th" style="text-align:center">Est. Value</div>
+      <div class="th" style="width: 80px"></div>
+    </div>
+    ${perpsHtml}
+  </div>`;
+    }
+
+    // ─── EVENT HANDLERS ───────────────────────────────────────────────────────
+    function onFdv(id, v) {
+      v = parseFloat(v) || 0;
+      state[id].fdv = v;
+      document.getElementById(`fdv-r-${id}`).value = v;
+      document.getElementById(`fdv-n-${id}`).value = v;
+      updatePrice(id);
+    }
+    function onAlc(id, v) {
+      v = parseFloat(v) || 0;
+      state[id].alloc = v;
+      document.getElementById(`alc-r-${id}`).value = v;
+      document.getElementById(`alc-n-${id}`).value = v;
+      updatePrice(id);
+    }
+    function onPts(id, v) {
+      v = parseFloat(v) || 0.1;
+      state[id].points = v;
+      document.getElementById(`pts-r-${id}`).value = v;
+      document.getElementById(`pts-n-${id}`).value = v;
+      updatePrice(id);
+    }
+    function onYourPts(id, v) {
+      const cleanVal = v.replace(/[^\d.]/g, '');
+      const num = parseFloat(cleanVal) || 0;
+      state[id].yourPoints = num;
+      updatePrice(id);
+    }
+    function onYourPtsFocus(input) {
+      input.value = input.value.replace(/\u00A0/g, '');
+    }
+    function onYourPtsBlur(id, v) {
+      const num = state[id].yourPoints;
+      const input = document.getElementById(`ypts-${id}`);
+      input.value = num > 0 ? formatWithSpaces(num) : '';
+    }
+
+    function updatePrice(id) {
+      const s = state[id];
+      const price = calcPrice(id);
+      const estVal = price * (s.yourPoints || 0);
+
+      // animate price
+      const el = document.getElementById(`price-${id}`);
+      el.classList.remove('price-pop');
+      void el.offsetWidth;
+      el.classList.add('price-pop');
+      el.textContent = fmtPrice(price);
+
+      // update est value
+      const evEl = document.getElementById(`estval-${id}`);
+      if (evEl) evEl.textContent = fmtPrice(estVal);
+
+      // update detail chips if open
+      const ddFdv = document.getElementById(`dd-fdv-${id}`);
+      const ddAlc = document.getElementById(`dd-alc-${id}`);
+      const ddPts = document.getElementById(`dd-pts-${id}`);
+      const ddPrice = document.getElementById(`dd-price-${id}`);
+      const ddFormula = document.getElementById(`dd-formula-${id}`);
+      if (ddFdv) ddFdv.textContent = `$${s.fdv}M`;
+      if (ddAlc) ddAlc.textContent = `${s.alloc}%`;
+      if (ddPts) ddPts.textContent = fmtPts(s.points);
+      if (ddPrice) ddPrice.textContent = fmtPrice(price);
+      if (ddFormula) ddFormula.innerHTML =
+        `Price = (<span class="fv">$${s.fdv}M</span> × <span class="fv">${s.alloc}%</span>) ÷ <span class="fv">${fmtPts(s.points)}</span> = <span class="fv">${fmtPrice(price)}</span>`;
+    }
+
+    function toggleDetails(id) {
+      openModal(id);
+    }
+
+    // ─── MODAL ───────────────────────────────────────────────────────────────
+    let _modalId = null;
+
+    function openModal(id) {
+      _modalId = id;
+      const p = PERPS[id];
+      const s = state[id];
+
+      // Header
+      document.getElementById('modal-logo').innerHTML =
+        `<img src="${p.logo}" alt="${p.name}" onerror="this.parentElement.innerHTML='${p.fb}'" />`;
+      document.getElementById('modal-name').textContent = p.name;
+      document.getElementById('modal-stage').textContent = p.stage;
+
+      // Share area name
+      document.getElementById('modal-share-name').textContent = p.name;
+
+      // Logo — use proxy so html2canvas can render it (same-origin)
+      const logoEl = document.getElementById('modal-share-logo');
+      const proxyUrl = '/img-proxy?url=' + encodeURIComponent(p.logo);
+      logoEl.innerHTML = `<img src="${proxyUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span style=\\'font-size:20px;font-weight:700;color:#9ca3af\\'>${p.name.substring(0, 2).toUpperCase()}</span>')" />`;
+
+      // Sliders
+      const fdvR = document.getElementById('m-fdv-r');
+      const fdvN = document.getElementById('m-fdv-n');
+      fdvR.value = s.fdv; fdvN.value = s.fdv;
+
+      const alcR = document.getElementById('m-alc-r');
+      const alcN = document.getElementById('m-alc-n');
+      alcR.value = s.alloc; alcN.value = s.alloc;
+
+      const ptsR = document.getElementById('m-pts-r');
+      const ptsN = document.getElementById('m-pts-n');
+      ptsR.max = p.ptsMax; ptsR.step = p.ptsStep;
+      ptsR.value = s.points; ptsN.value = s.points;
+
+      // Your points
+      const yptsInput = document.getElementById('m-ypts');
+      yptsInput.value = s.yourPoints ? formatWithSpaces(s.yourPoints) : '';
+
+      updateModalResults();
+
+      document.getElementById('perp-modal-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('perp-modal-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+      _modalId = null;
+    }
+
+    function updateModalResults() {
+      if (!_modalId) return;
+      const id = _modalId;
+      const s = state[id];
+      const p = PERPS[id];
+      const price = calcPrice(id);
+      const estVal = price * (s.yourPoints || 0);
+
+      // Metrics — FDV, Allocation, Total Points vertically
+      document.getElementById('modal-metrics').innerHTML = `
+        <div class="modal-metric-row"><span class="modal-metric-label">FDV</span><span class="modal-metric-val">$${s.fdv}M</span></div>
+        <div class="modal-metric-row"><span class="modal-metric-label">Allocation</span><span class="modal-metric-val">${s.alloc}%</span></div>
+        <div class="modal-metric-row"><span class="modal-metric-label">Total Points</span><span class="modal-metric-val">${fmtPts(s.points)}</span></div>
+      `;
+
+      // Price hero (big centered)
+      document.getElementById('modal-price-hero-val').textContent = fmtPrice(price);
+
+      // Formula
+      document.getElementById('modal-formula').innerHTML =
+        `Price = (<span class="fv">$${s.fdv}M</span> &times; <span class="fv">${s.alloc}%</span>) &divide; <span class="fv">${fmtPts(s.points)}</span> = <span class="fv">${fmtPrice(price)}</span>`;
+
+      // Est value + tokens count (with space separators for large numbers)
+      document.getElementById('modal-est-val').textContent = fmtPriceBig(estVal);
+      const yp = s.yourPoints || 0;
+      document.getElementById('modal-est-tokens').textContent = yp > 0 ? `${formatWithSpaces(yp)} tokens` : '';
+
+      // Time remaining (bottom left)
+      document.getElementById('modal-time-val').textContent = p.remaining || '—';
+
+      // Conditions (bottom right)
+      const conds = p.conditions || [];
+      document.getElementById('modal-conditions').innerHTML =
+        conds.map(c => `<span class="cond-tag">${c}</span>`).join('');
+    }
+
+    function onModalFdv(v) {
+      if (!_modalId) return;
+      v = parseFloat(v) || 0;
+      state[_modalId].fdv = v;
+      document.getElementById('m-fdv-r').value = v;
+      document.getElementById('m-fdv-n').value = v;
+      syncModalToMain(_modalId);
+      updateModalResults();
+    }
+    function onModalAlc(v) {
+      if (!_modalId) return;
+      v = parseFloat(v) || 0;
+      state[_modalId].alloc = v;
+      document.getElementById('m-alc-r').value = v;
+      document.getElementById('m-alc-n').value = v;
+      syncModalToMain(_modalId);
+      updateModalResults();
+    }
+    function onModalPts(v) {
+      if (!_modalId) return;
+      v = parseFloat(v) || 0.1;
+      state[_modalId].points = v;
+      document.getElementById('m-pts-r').value = v;
+      document.getElementById('m-pts-n').value = v;
+      syncModalToMain(_modalId);
+      updateModalResults();
+    }
+    function onModalYourPts(v) {
+      if (!_modalId) return;
+      const cleanVal = v.replace(/[^\d.]/g, '');
+      const num = parseFloat(cleanVal) || 0;
+      state[_modalId].yourPoints = num;
+      syncModalToMain(_modalId);
+      updateModalResults();
+    }
+    function onModalYourPtsBlur() {
+      if (!_modalId) return;
+      const num = state[_modalId].yourPoints;
+      document.getElementById('m-ypts').value = num > 0 ? formatWithSpaces(num) : '';
+    }
+
+    function syncModalToMain(id) {
+      // Keep main row in sync
+      const s = state[id];
+      const fdvR = document.getElementById(`fdv-r-${id}`);
+      const fdvN = document.getElementById(`fdv-n-${id}`);
+      if (fdvR) { fdvR.value = s.fdv; fdvN.value = s.fdv; }
+      const alcR = document.getElementById(`alc-r-${id}`);
+      const alcN = document.getElementById(`alc-n-${id}`);
+      if (alcR) { alcR.value = s.alloc; alcN.value = s.alloc; }
+      const ptsR = document.getElementById(`pts-r-${id}`);
+      const ptsN = document.getElementById(`pts-n-${id}`);
+      if (ptsR) { ptsR.value = s.points; ptsN.value = s.points; }
+      const yptsEl = document.getElementById(`ypts-${id}`);
+      if (yptsEl) yptsEl.value = s.yourPoints ? formatWithSpaces(s.yourPoints) : '';
+      updatePrice(id);
+    }
+
+    function resetModalPerp(id) {
+      if (!_modalId) return;
+      resetPerp(_modalId);
+      // Re-populate modal with reset values
+      openModal(_modalId);
+    }
+
+    async function shareModalAsImage() {
+      const btn = document.getElementById('modal-share-btn');
+      const area = document.getElementById('modal-share-area');
+      btn.textContent = 'Generating...';
+      btn.disabled = true;
+      try {
+        const canvas = await html2canvas(area, {
+          backgroundColor: '#0b0d11',
+          scale: 2,
+          useCORS: true,
+          logging: false
+        });
+
+        // Get blob first
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        if (!blob) throw new Error('Failed to create image');
+
+        // Copy to clipboard only — no download
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          btn.textContent = 'Copied to clipboard!';
+          btn.classList.add('copied');
+        } else {
+          // Only if clipboard API not available at all — open in new tab
+          const url = URL.createObjectURL(blob);
+          window.open(url, '_blank');
+          btn.textContent = 'Opened in new tab!';
+          btn.classList.add('copied');
+        }
+
+        setTimeout(() => {
+          btn.innerHTML = '&#128203; Copy as Image';
+          btn.classList.remove('copied');
+          btn.disabled = false;
+        }, 2000);
+      } catch (e) {
+        console.error('Share error:', e);
+        btn.textContent = 'Error — try again';
+        btn.disabled = false;
+        setTimeout(() => { btn.innerHTML = '&#128203; Copy as Image'; }, 2000);
+      }
+    }
+
+    // Close modal on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && _modalId) closeModal();
+    });
+
+    function resetPerp(id) {
+      const p = PERPS[id];
+      state[id] = { fdv: p.fdv, alloc: p.alloc, points: p.points, yourPoints: 0 };
+      onFdv(id, p.fdv);
+      onAlc(id, p.alloc);
+      onPts(id, p.points);
+      document.getElementById(`ypts-${id}`).value = 0;
+      updatePrice(id);
+    }
+
+    // ─── CONFIG EDITOR ────────────────────────────────────────────────────────
+    // Map each perp ID to its tier class
+    const PERP_TIER = {};
+    TIERS.forEach(t => t.ids.forEach(id => { PERP_TIER[id] = t.id; }));
+
+    function cfgCalcPrice(fdv, alloc, pts) {
+      if (!pts) return 0;
+      return (fdv * 1_000_000 * alloc / 100) / (pts * 1_000_000);
+    }
+
+    function populateConfig() {
+      const tbody = document.getElementById('cfg-tbody');
+      const allIds = TIERS.flatMap(t => t.ids);
+      tbody.innerHTML = allIds.map(id => {
+        const p = PERPS[id];
+        const tc = PERP_TIER[id];
+        const tagClass = { t1: 'tag-t1', t2: 'tag-t2', t3: 'tag-t3' }[tc] || '';
+        const tierLbl = { t1: 'T1', t2: 'T2', t3: 'T3' }[tc] || '';
+        const preview = cfgCalcPrice(p.fdv, p.alloc, p.points);
+        return `
+        <tr>
+          <td>
+            <span class="cfg-proto-name">${p.name}</span>
+            <span class="cfg-tier-tag ${tagClass}">${tierLbl}</span>
+          </td>
+          <td>
+            <div class="inp-value-row">
+              <input type="number" class="cfg-input" id="cfg-fdv-${id}"
+                value="${p.fdv}" min="1" step="10"
+                oninput="updateCfgPreview('${id}')" />
+              <span class="cfg-unit">$M</span>
+            </div>
+          </td>
+          <td>
+            <div class="inp-value-row">
+              <input type="number" class="cfg-input" id="cfg-alc-${id}"
+                value="${p.alloc}" min="1" max="80" step="0.5"
+                oninput="updateCfgPreview('${id}')" />
+              <span class="cfg-unit">%</span>
+            </div>
+          </td>
+          <td>
+            <div class="inp-value-row">
+              <input type="number" class="cfg-input" id="cfg-pts-${id}"
+                value="${p.points}" min="0.1" step="0.1"
+                oninput="updateCfgPreview('${id}')" />
+              <span class="cfg-unit">M</span>
+            </div>
+          </td>
+          <td class="cfg-price-preview" id="cfg-prev-${id}">${fmtPrice(preview)}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function updateCfgPreview(id) {
+      const fdv = parseFloat(document.getElementById(`cfg-fdv-${id}`).value) || 0;
+      const alloc = parseFloat(document.getElementById(`cfg-alc-${id}`).value) || 0;
+      const pts = parseFloat(document.getElementById(`cfg-pts-${id}`).value) || 0.1;
+      const prev = document.getElementById(`cfg-prev-${id}`);
+      if (prev) prev.textContent = fmtPrice(cfgCalcPrice(fdv, alloc, pts));
+    }
+
+    function openConfig() {
+      populateConfig();
+      document.getElementById('cfg-overlay').classList.add('open');
+    }
+    function closeConfig() {
+      document.getElementById('cfg-overlay').classList.remove('open');
+    }
+
+    function applyConfig() {
+      const allIds = TIERS.flatMap(t => t.ids);
+      allIds.forEach(id => {
+        const fdv = parseFloat(document.getElementById(`cfg-fdv-${id}`).value);
+        const alloc = parseFloat(document.getElementById(`cfg-alc-${id}`).value);
+        const pts = parseFloat(document.getElementById(`cfg-pts-${id}`).value);
+        if (!isNaN(fdv)) PERPS[id].fdv = fdv;
+        if (!isNaN(alloc)) PERPS[id].alloc = alloc;
+        if (!isNaN(pts)) PERPS[id].points = pts;
+
+        // Preserve yourPoints while resetting to new defaults
+        const currentYPs = state[id] ? state[id].yourPoints : 0;
+        state[id] = {
+          ...state[id],
+          fdv: PERPS[id].fdv,
+          alloc: PERPS[id].alloc,
+          points: PERPS[id].points,
+          yourPoints: currentYPs
+        };
+      });
+
+      // Global UI Refresh
+      renderAll();
+      bindTooltips();
+
+      // persist
+      const saved = {};
+      allIds.forEach(id => {
+        saved[id] = { fdv: PERPS[id].fdv, alloc: PERPS[id].alloc, points: PERPS[id].points };
+      });
+      try { localStorage.setItem('perps-cfg', JSON.stringify(saved)); } catch (e) { }
+
+      // flash saved message
+      const msg = document.getElementById('cfg-saved-msg');
+      msg.classList.add('show');
+      setTimeout(() => {
+        msg.classList.remove('show');
+        closeConfig();
+      }, 700);
+    }
+
+    function hardResetConfig() {
+      if (!confirm('Reset ALL defaults back to the original coded values?')) return;
+      try { localStorage.removeItem('perps-cfg'); } catch (e) { }
+      location.reload();
+    }
+
+    function loadSavedConfig() {
+      try {
+        const raw = localStorage.getItem('perps-cfg');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        Object.keys(saved).forEach(id => {
+          if (!PERPS[id]) return;
+          const s = saved[id];
+          if (s.fdv !== undefined) PERPS[id].fdv = s.fdv;
+          if (s.alloc !== undefined) PERPS[id].alloc = s.alloc;
+          if (s.points !== undefined) PERPS[id].points = s.points;
+        });
+      } catch (e) { }
+    }
+
+    // ─── RENDER ALL ──────────────────────────────────────────────────────────
+    function renderAll() {
+      document.getElementById('perps-root').innerHTML = TIERS.map(renderTier).join('');
+    }
+
+    // ─── INIT ─────────────────────────────────────────────────────────────────
+    async function init() {
+      // 1. Parallel fetch all configs before initial rendering
+      const loadingJobs = [
+        fetch('comments.json').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('config.json').then(r => r.ok ? r.json() : null).catch(() => null)
+      ];
+
+      try {
+        const [comments, config] = await Promise.all(loadingJobs);
+
+        // Apply metadata (comments.json)
+        if (comments) {
+          Object.keys(comments).forEach(id => {
+            if (PERPS[id]) {
+              PERPS[id].remaining = comments[id].remaining || '';
+              PERPS[id].conditions = comments[id].conditions || [];
+            }
+          });
+        }
+
+        // Apply dynamic indicators (config.json)
+        if (config) {
+          config.forEach(c => {
+            if (PERPS[c.id]) {
+              if (c.fdv !== undefined) PERPS[c.id].fdv = c.fdv;
+              if (c.alloc !== undefined) PERPS[c.id].alloc = c.alloc;
+              if (c.points !== undefined) PERPS[c.id].points = c.points;
+              if (c.status !== undefined) {
+                PERPS[c.id].status = c.status;
+                const labels = { active: 'Active', tge_soon: 'TGE Soon', late: 'Late', boost: '🔥 Mad March' };
+                PERPS[c.id].statusLabel = labels[c.status] || 'Active';
+              }
+              if (c.link !== undefined) PERPS[c.id].link = c.link;
+              if (c.link_text !== undefined) PERPS[c.id].linkText = c.link_text;
+            }
+          });
+        }
+
+        // 2. Prepare state with final merged values
+        initState();
+        loadSavedConfig(); // Local storage overrides take priority
+      } catch (e) {
+        console.error("Initialization error", e);
+        initState();
+        loadSavedConfig();
+      }
+
+      // 3. One single render to provide a smooth load experience
+      renderAll();
+      bindTooltips();
+    }
+
+    // ─── CURSOR TOOLTIP ──────────────────────────────────────────────────────
+    const _tooltip = document.getElementById('cursor-tooltip');
+    document.addEventListener('mousemove', e => {
+      _tooltip.style.left = (e.clientX + 16) + 'px';
+      _tooltip.style.top = (e.clientY - 10) + 'px';
+    });
+
+    function bindTooltips() {
+      // Link tooltips on proto-info (with or without linkText)
+      document.querySelectorAll('.proto-info.has-link').forEach(el => {
+        const row = el.closest('[id^="row-"]');
+        if (!row) return;
+        const id = row.id.replace('row-', '');
+        const linkText = PERPS[id] && PERPS[id].linkText;
+        const txt = linkText ? linkText + '\nOpen link \u2197' : 'Open link \u2197';
+        el.addEventListener('mouseenter', () => {
+          _tooltip.style.whiteSpace = 'pre-line';
+          _tooltip.textContent = txt;
+          _tooltip.style.display = 'block';
+        });
+        el.addEventListener('mouseleave', () => {
+          _tooltip.style.display = 'none';
+        });
+      });
+
+      // "View details" tooltip on row empty area
+      document.querySelectorAll('.perp-main').forEach(el => {
+        el.addEventListener('mouseover', (e) => {
+          const overProto = e.target.closest('.proto-info');
+          const overInteractive = e.target.closest('.inp-group, .btn-group, .point-group, .value-group');
+          if (overProto || overInteractive) {
+            // proto zone or inputs: don't show "View details"
+            if (!overProto) _tooltip.style.display = 'none';
+          } else {
+            _tooltip.textContent = '\uD83D\uDCCA View details';
+            _tooltip.style.display = 'block';
+          }
+        });
+        el.addEventListener('mouseleave', () => {
+          _tooltip.style.display = 'none';
+        });
+      });
+    }
+
+    init();
+  </script>
+
+  <script>document.getElementById('bg-overlay').classList.add('active');</script>
+
+  <!-- GoatCounter: private analytics, no cookies, no popup -->
+  <script data-goatcounter="https://becryptobee.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+
+</html>
