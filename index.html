@@ -2650,10 +2650,41 @@
       // Share area name
       document.getElementById('modal-share-name').textContent = p.name;
 
-      // Logo — use proxy so html2canvas can render it (same-origin)
+      // Logo — convert to base64 data URL for html2canvas compatibility
       const logoEl = document.getElementById('modal-share-logo');
-      const proxyUrl = '/img-proxy?url=' + encodeURIComponent(p.logo);
-      logoEl.innerHTML = `<img src="${proxyUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none';this.parentElement.insertAdjacentHTML('beforeend','<span style=\\'font-size:20px;font-weight:700;color:#9ca3af\\'>${p.name.substring(0, 2).toUpperCase()}</span>')" />`;
+      logoEl.innerHTML = `<span style="font-size:20px;font-weight:700;color:#9ca3af">${p.name.substring(0, 2).toUpperCase()}</span>`;
+      // Try to load logo as base64 (works both with local proxy and CORS proxy)
+      (async () => {
+        try {
+          let blob;
+          // Try local proxy first
+          try {
+            const r = await fetch('/img-proxy?url=' + encodeURIComponent(p.logo));
+            if (r.ok) blob = await r.blob();
+          } catch(e) {}
+          // Fallback: try direct fetch (works if CORS headers present)
+          if (!blob) {
+            try {
+              const r = await fetch(p.logo, { mode: 'cors' });
+              if (r.ok) blob = await r.blob();
+            } catch(e) {}
+          }
+          // Fallback: try public CORS proxy
+          if (!blob) {
+            try {
+              const r = await fetch('https://corsproxy.io/?' + encodeURIComponent(p.logo));
+              if (r.ok) blob = await r.blob();
+            } catch(e) {}
+          }
+          if (blob) {
+            const reader = new FileReader();
+            reader.onload = () => {
+              logoEl.innerHTML = `<img src="${reader.result}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain" />`;
+            };
+            reader.readAsDataURL(blob);
+          }
+        } catch(e) { /* keep fallback text */ }
+      })();
 
       // Sliders
       const fdvR = document.getElementById('m-fdv-r');
