@@ -98,7 +98,9 @@
 
     /* ─── HEADER ─── */
     .header {
-      background: #0f1219;
+      background: rgba(15, 18, 25, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--border);
       padding: 0 32px;
       height: 80px;
@@ -109,21 +111,6 @@
       top: 0;
       z-index: 100;
       box-shadow: 0 1px 24px rgba(0, 0, 0, 0.4);
-      overflow: hidden;
-    }
-    .header::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 15% 50%, rgba(245, 197, 24, 0.06) 0%, transparent 50%),
-        radial-gradient(circle at 85% 50%, rgba(245, 197, 24, 0.04) 0%, transparent 40%),
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='112' height='200' viewBox='0 0 112 200'%3E%3Cpath d='M56 132L0 100L0 32L56 0L112 32L112 100L56 132Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3Cpath d='M56 200L0 168L0 100L56 68L112 100L112 168L56 200Z' fill='none' stroke='%23f5c518' stroke-width='0.8'/%3E%3C/svg%3E");
-      background-size: 100% 100%, 100% 100%, 112px 168px;
-      background-position: center;
-      opacity: 0.15;
-      z-index: 0;
     }
     .header > * { position: relative; z-index: 1; }
 
