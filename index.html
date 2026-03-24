@@ -61,12 +61,9 @@
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 5;
+      z-index: 500;
     }
-    /* Ensure interactive content is above bg overlay */
-    .header { position: relative; z-index: 100; }
-    .formula-bar { position: relative; z-index: 10; }
-    .container { position: relative; z-index: 10; }
+    .header { position: sticky; top: 0; z-index: 100; }
     .perp-modal-overlay { z-index: 2000; }
     .bg-picker { z-index: 999; }
     #cursor-tooltip { z-index: 9999; }
