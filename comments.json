@@ -89,13 +89,7 @@
             "Boosted event ongoing"
         ]
     },
-    "backpack": {
-        "remaining": "Epilogue phase before TGE",
-        "conditions": [
-            "Points program runs across Pre-Season + Seasons 1-4",
-            "~300M+ points accumulated across seasons",
-            "Final Epilogue redistribution before snapshot",
-            "24% of token supply allocated to points holders"
-        ]
-    }
+    "backpack": {},
+    "hyperliquid": {},
+    "lighter": {}
 }

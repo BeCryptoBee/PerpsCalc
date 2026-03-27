@@ -87,10 +87,19 @@
     },
     {
         "id": "backpack",
-        "fdv": 400,
-        "alloc": 24,
-        "points": 420,
-        "status": "late",
-        "link": "https://backpack.exchange/"
+        "status": "launched",
+        "link": "https://backpack.exchange/join/hg6e2mgu",
+        "link_text": "Referral link"
+    },
+    {
+        "id": "hyperliquid",
+        "status": "launched",
+        "link": "https://app.hyperliquid.xyz/"
+    },
+    {
+        "id": "lighter",
+        "status": "launched",
+        "link": "https://app.lighter.xyz/?referral=X3CR4AFJF39B",
+        "link_text": "Referral link"
     }
 ]
