@@ -1447,6 +1447,45 @@
         /* Reduced top padding from 15px */
       }
 
+      /* ─── COMPACT CARDS: only header row visible on mobile ─── */
+      /* All inputs/price live in the detail modal on mobile */
+      .perp-row:not(.launched-row) .perp-main {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        padding: 14px 16px !important;
+        min-height: 76px !important;
+      }
+      .perp-row:not(.launched-row) .proto-info {
+        margin-bottom: 0 !important;
+        padding-right: 100px !important;
+        /* reserve space for centered expand + right-aligned reset */
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+      }
+      .perp-row:not(.launched-row) .inp-group,
+      .perp-row:not(.launched-row) .price-cell,
+      .perp-row:not(.launched-row) .point-group,
+      .perp-row:not(.launched-row) .value-group {
+        display: none !important;
+      }
+      .perp-row:not(.launched-row) .btn-group {
+        position: static !important;
+      }
+      .perp-row:not(.launched-row) .expand-btn {
+        position: absolute !important;
+        left: 50% !important;
+        right: auto !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+      }
+      .perp-row:not(.launched-row) .reset-row-btn {
+        position: absolute !important;
+        right: 16px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+      }
+
       /* ─── LAUNCHED CARDS: 1 per row on mobile ─── */
       .launched-grid {
         grid-template-columns: 1fr !important;
@@ -2028,7 +2067,8 @@
     /* Responsive modal */
     @media (max-width: 768px) {
       .perp-modal-overlay {
-        padding: 8px !important;
+        padding: calc(24px + env(safe-area-inset-top, 0px)) 12px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+        align-items: center !important;
       }
 
       .perp-modal-body {
@@ -2046,11 +2086,12 @@
       }
 
       .perp-modal {
-        border-radius: 16px;
-        max-height: 95vh;
+        border-radius: 20px !important;
+        max-height: calc(100vh - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
+        overflow-y: auto !important;
       }
 
       .perp-modal-header {
