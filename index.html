@@ -266,6 +266,8 @@
       font-weight: 800;
       letter-spacing: 1.5px;
       text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .tier1 .tier-pill {
@@ -2262,7 +2264,7 @@
         id: 't1',
         label: 'Tier 1',
         desc: 'High conviction — stronger fundamentals & traction',
-        ids: ['variational', 'edgex', 'nado'],
+        ids: ['variational', 'nado'],
       },
       {
         id: 't2',
@@ -2280,7 +2282,7 @@
         id: 't4',
         label: 'Launched',
         desc: 'TGE Passed — tokens live',
-        ids: ['hyperliquid', 'lighter', 'backpack'],
+        ids: ['hyperliquid', 'lighter', 'backpack', 'edgex'],
       },
     ];
 
@@ -2317,13 +2319,12 @@
       edgex: {
         name: 'EdgeX',
         stage: 'PERP DEX · EVM',
-        status: 'final', statusLabel: 'Final Stretch',
+        status: 'launched', statusLabel: 'Launched',
         logo: 'https://www.google.com/s2/favicons?domain=edgex.exchange&sz=64',
         fb: 'EX',
-        fdv: 600, alloc: 10, points: 8,
-        ptsMax: 40, ptsStep: 0.5,
-        remaining: 'Final stretch before TGE',
-        conditions: ['~8M total points', '7.3M distributed in Season 1', '~250k–300k pts / week pre-TGE', 'Pro-trader focus'],
+        launched: true,
+        link: 'https://pro.edgex.exchange/en-US/referral/764955352',
+        link_text: 'Referral link',
         ref: null,
       },
       nado: {
