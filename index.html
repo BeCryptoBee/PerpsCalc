@@ -1458,8 +1458,8 @@
       }
       .perp-row:not(.launched-row) .proto-info {
         margin-bottom: 0 !important;
-        padding-right: 100px !important;
-        /* reserve space for centered expand + right-aligned reset */
+        padding-right: 56px !important;
+        /* reserve space for the expand arrow anchored to the right edge */
         flex: 1 1 auto !important;
         min-width: 0 !important;
       }
@@ -1469,19 +1469,17 @@
       .perp-row:not(.launched-row) .value-group {
         display: none !important;
       }
+      /* Hide the reset button on mobile — users reset from the modal */
+      .perp-row:not(.launched-row) .reset-row-btn {
+        display: none !important;
+      }
       .perp-row:not(.launched-row) .btn-group {
         position: static !important;
       }
       .perp-row:not(.launched-row) .expand-btn {
         position: absolute !important;
-        left: 50% !important;
-        right: auto !important;
-        top: 50% !important;
-        transform: translate(-50%, -50%) !important;
-      }
-      .perp-row:not(.launched-row) .reset-row-btn {
-        position: absolute !important;
         right: 16px !important;
+        left: auto !important;
         top: 50% !important;
         transform: translateY(-50%) !important;
       }
@@ -2067,7 +2065,7 @@
     /* Responsive modal */
     @media (max-width: 768px) {
       .perp-modal-overlay {
-        padding: calc(24px + env(safe-area-inset-top, 0px)) 12px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+        padding: calc(40px + env(safe-area-inset-top, 0px)) 12px calc(40px + env(safe-area-inset-bottom, 0px)) !important;
         align-items: center !important;
       }
 
@@ -2087,7 +2085,7 @@
 
       .perp-modal {
         border-radius: 20px !important;
-        max-height: calc(100vh - 48px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
+        max-height: calc(100vh - 80px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
@@ -2227,7 +2225,7 @@
       </div>
       <div class="header-text-stack">
         <div class="user-branding">BeCryptoBee <span
-            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.18</span>
+            style="font-size:10px; color:var(--muted); vertical-align:middle; opacity:0.5; margin-left:4px">v2.19</span>
         </div>
         <div class="header-title">
           Perps Point Cost Calculator
