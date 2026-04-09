@@ -1216,9 +1216,10 @@
       .header-inner {
         flex-direction: row !important;
         align-items: center !important;
-        justify-content: center !important;
+        justify-content: flex-start !important;
         padding-top: 0 !important;
-        /* Removed padding to allow flex centering */
+        padding-right: 90px !important;
+        /* Reserve space for absolute socials on the right */
         margin: 20px 0 !important;
         gap: 12px !important;
         width: 100% !important;
@@ -1317,17 +1318,18 @@
       }
 
       .proto-info {
-        width: 100%;
         width: 100% !important;
         margin-bottom: 20px !important;
         display: flex !important;
         flex-direction: row !important;
         align-items: center !important;
-        justify-content: center !important;
-        /* Center logo in mobile */
+        justify-content: flex-start !important;
+        /* Left-align logo on mobile so it doesn't collide with reset/expand buttons */
         gap: 12px !important;
         text-align: left !important;
         padding-left: 0 !important;
+        padding-right: 96px !important;
+        /* Reserve space for reset (right:56px) + expand (right:16px) buttons */
       }
 
       .proto-name {
@@ -1441,6 +1443,42 @@
         border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
         padding-top: 8px !important;
         /* Reduced top padding from 15px */
+      }
+
+      /* ─── LAUNCHED CARDS: 1 per row on mobile ─── */
+      .launched-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+      .perp-row.launched-row .perp-main {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        padding: 18px 20px !important;
+        min-height: 0 !important;
+        text-align: left !important;
+      }
+      .perp-row.launched-row .proto-info {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        margin-bottom: 0 !important;
+        padding-right: 0 !important;
+        gap: 12px !important;
+      }
+      .perp-row.launched-row .proto-name {
+        justify-content: flex-start !important;
+        text-align: left !important;
+      }
+      .perp-row.launched-row .proto-stage {
+        text-align: left !important;
+      }
+      .perp-row.launched-row .launched-label {
+        margin-left: auto !important;
+        margin-top: 0 !important;
+        opacity: 1 !important;
+        white-space: nowrap !important;
+        padding-left: 12px !important;
       }
     }
 
@@ -1987,6 +2025,10 @@
 
     /* Responsive modal */
     @media (max-width: 768px) {
+      .perp-modal-overlay {
+        padding: 8px !important;
+      }
+
       .perp-modal-body {
         grid-template-columns: 1fr;
       }
@@ -1994,16 +2036,31 @@
       .perp-modal-left {
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 18px 20px;
+        padding: 16px 16px;
       }
 
       .perp-modal-right {
-        padding: 18px 20px;
+        padding: 16px 16px;
       }
 
       .perp-modal {
         border-radius: 16px;
         max-height: 95vh;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+      }
+
+      .perp-modal-header {
+        padding: 14px 16px 12px !important;
+      }
+
+      .modal-result-card,
+      .modal-top-name,
+      .modal-formula,
+      .modal-metrics {
+        max-width: 100% !important;
+        word-break: break-word !important;
       }
     }
   </style>
@@ -3149,6 +3206,10 @@
     });
 
     function bindTooltips() {
+      // Skip hover tooltips entirely on touch devices (mobile) —
+      // they get stuck after tap and overlap UI elements.
+      const isTouch = window.matchMedia && window.matchMedia('(hover: none)').matches;
+      if (isTouch) return;
       // Link tooltips on proto-info (with or without linkText)
       document.querySelectorAll('.proto-info.has-link').forEach(el => {
         const row = el.closest('[id^="row-"]');
