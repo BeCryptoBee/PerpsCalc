@@ -361,7 +361,7 @@
       column-gap: 24px;
       /* Fixed identical gaps */
       justify-content: start;
-      padding: 0 22px 0 24px;
+      padding: 0 22px;
       margin-bottom: 12px;
       align-items: center;
     }
@@ -426,6 +426,38 @@
       padding: 20px 22px;
       cursor: pointer;
       position: relative;
+    }
+
+    /* Vertical dividers between columns (desktop only) */
+    @media (min-width: 769px) {
+      .perp-row:not(.launched-row) .perp-main > *:not(:last-child) {
+        position: relative;
+      }
+      .perp-row:not(.launched-row) .perp-main > *:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 56%;
+        background: rgba(255, 255, 255, 0.06);
+        pointer-events: none;
+      }
+      .table-head .th:not(:last-child) {
+        position: relative;
+      }
+      .table-head .th:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: -12px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 1px;
+        height: 120%;
+        background: rgba(255, 255, 255, 0.06);
+        pointer-events: none;
+      }
     }
 
     .btn-group {
@@ -568,8 +600,10 @@
 
     .inp-row input[type="range"] {
       -webkit-appearance: none;
-      width: 40%;
-      /* Reduced by 30% from 40% */
+      flex: 1 1 auto;
+      width: auto;
+      min-width: 40px;
+      /* Takes all remaining space in the cell */
 
       height: 4px;
       background: rgba(255, 255, 255, 0.1);
@@ -608,11 +642,18 @@
       font-family: 'Outfit', sans-serif;
       font-size: 15px;
       font-weight: 700;
-      padding: 6px 10px;
-      width: 105px !important;
+      padding: 6px 8px;
+      width: 74px !important;
+      /* ~30% narrower than before to leave room for sliders */
       text-align: right;
       outline: none;
       transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    /* Your Points / Est Value keep the original wider input */
+    .perp-main .point-group .num-input,
+    .perp-main .value-group .num-input {
+      width: 105px !important;
     }
 
     .num-input::-webkit-outer-spin-button,
@@ -693,8 +734,9 @@
     .proto-info {
       transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
       border-radius: var(--radius-sm);
-      padding: 4px 8px;
-      margin: -4px -8px;
+      padding: 4px 8px 4px 0;
+      margin: -4px 0;
+      /* Keep left edge aligned with the Protocol header */
     }
 
     .proto-info.has-link {
