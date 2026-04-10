@@ -2205,7 +2205,7 @@
           <div class="modal-your-points">
             <div class="modal-slider-label">ENTER Your Points</div>
             <input type="text" id="m-ypts" inputmode="numeric" placeholder="Enter amount..."
-              oninput="onModalYourPts(this.value)" onfocus="this.value=this.value.replace(/\u00A0/g,'')"
+              oninput="onModalYourPts(this.value)"
               onblur="onModalYourPtsBlur()" />
           </div>
 
@@ -2828,10 +2828,18 @@
       const cleanVal = v.replace(/[^\d.]/g, '');
       const num = parseFloat(cleanVal) || 0;
       state[id].yourPoints = num;
+      const input = document.getElementById(`ypts-${id}`);
+      if (input) {
+        // Preserve caret position by counting distance from the end
+        const caretFromEnd = input.value.length - (input.selectionStart || input.value.length);
+        input.value = cleanVal ? formatWithSpaces(cleanVal) : '';
+        const newPos = Math.max(0, input.value.length - caretFromEnd);
+        try { input.setSelectionRange(newPos, newPos); } catch (e) { }
+      }
       updatePrice(id);
     }
     function onYourPtsFocus(input) {
-      input.value = input.value.replace(/\u00A0/g, '');
+      // Keep the formatted value visible while typing
     }
     function onYourPtsBlur(id, v) {
       const num = state[id].yourPoints;
@@ -2997,6 +3005,13 @@
       const cleanVal = v.replace(/[^\d.]/g, '');
       const num = parseFloat(cleanVal) || 0;
       state[_modalId].yourPoints = num;
+      const input = document.getElementById('m-ypts');
+      if (input) {
+        const caretFromEnd = input.value.length - (input.selectionStart || input.value.length);
+        input.value = cleanVal ? formatWithSpaces(cleanVal) : '';
+        const newPos = Math.max(0, input.value.length - caretFromEnd);
+        try { input.setSelectionRange(newPos, newPos); } catch (e) { }
+      }
       syncModalToMain(_modalId);
       updateModalResults();
     }
