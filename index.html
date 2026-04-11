@@ -1617,6 +1617,8 @@
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(245, 197, 24, 0.08);
       animation: modalSlideUp 0.25s ease;
     }
@@ -2928,12 +2930,29 @@
       updateModalResults();
 
       document.getElementById('perp-modal-overlay').classList.add('open');
+      // Lock background scroll — use position:fixed trick so iOS Safari
+      // stops propagating touchmove to the document behind the modal.
+      _savedScrollY = window.scrollY || window.pageYOffset || 0;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${_savedScrollY}px`;
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
       document.body.style.overflow = 'hidden';
     }
 
+    let _savedScrollY = 0;
+
     function closeModal() {
       document.getElementById('perp-modal-overlay').classList.remove('open');
+      // Restore background scroll and jump back to the saved position.
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
       document.body.style.overflow = '';
+      window.scrollTo(0, _savedScrollY);
       _modalId = null;
     }
 
