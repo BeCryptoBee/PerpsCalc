@@ -406,14 +406,7 @@
 
     /* left accent bar by tier */
     .perp-row.t1 {
-      border-left: 3px solid #ff8c00;
-      border-image: linear-gradient(0deg, #ff4500, #ff8c00, #ffd700, #ff8c00, #ff4500) 1;
-      animation: fireGlow 2s ease-in-out infinite;
-    }
-    @keyframes fireGlow {
-      0%, 100% { border-image: linear-gradient(0deg, #ff4500, #ff8c00, #ffd700, #ff8c00, #ff4500) 1; }
-      33% { border-image: linear-gradient(0deg, #ffd700, #ff4500, #ff8c00, #ffd700, #ff4500) 1; }
-      66% { border-image: linear-gradient(0deg, #ff8c00, #ffd700, #ff4500, #ff8c00, #ffd700) 1; }
+      border-left: 3px solid rgba(245, 197, 24, 0.4);
     }
 
     .perp-row.t2 {
@@ -2303,7 +2296,7 @@
   <div class="formula-bar">
     <button class="cfg-btn" onclick="openConfig()">⚙ <span>Default Options</span></button>
     <div class="formula-text">
-      📐 Formula: $ / point = <b>(FDV × Allocation%)</b> ÷ <b>Total Points</b>
+      📐 Point Price = <b>(FDV × Allocation%)</b> ÷ <b>Total Points</b>
     </div>
   </div>
 
