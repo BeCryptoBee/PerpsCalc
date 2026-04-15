@@ -406,15 +406,20 @@
 
     /* left accent bar by tier */
     .perp-row.t1 {
-      border-left: 3px solid rgba(245, 197, 24, 0.4);
+      border-left: 3px solid #f5c518;
+      animation: emberPulse 2.5s ease-in-out infinite;
+    }
+    @keyframes emberPulse {
+      0%, 100% { box-shadow: -6px 0 18px -4px rgba(255, 100, 0, 0.25); }
+      50%      { box-shadow: -8px 0 28px -2px rgba(255, 68, 0, 0.5), 0 0 12px -4px rgba(255, 140, 0, 0.15); }
     }
 
     .perp-row.t2 {
-      border-left: 3px solid rgba(79, 143, 255, 0.4);
+      border-left: 3px solid #4f9fff;
     }
 
     .perp-row.t3 {
-      border-left: 3px solid rgba(107, 114, 128, 0.3);
+      border-left: 3px solid #8b95a5;
     }
 
     .perp-main {
