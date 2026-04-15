@@ -406,7 +406,24 @@
 
     /* left accent bar by tier */
     .perp-row.t1 {
-      border-left: 3px solid rgba(245, 197, 24, 0.4);
+      border-left: 3px solid transparent;
+      position: relative;
+    }
+    .perp-row.t1::before {
+      content: '';
+      position: absolute;
+      left: -3px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      border-radius: var(--radius) 0 0 var(--radius);
+      background: linear-gradient(0deg, #ff4500, #ff8c00, #ffd700, #ff8c00, #ff4500);
+      background-size: 100% 200%;
+      animation: fireGlow 2s ease-in-out infinite;
+    }
+    @keyframes fireGlow {
+      0%, 100% { background-position: 0% 0%; }
+      50% { background-position: 0% 100%; }
     }
 
     .perp-row.t2 {
@@ -2348,19 +2365,19 @@
         id: 't1',
         label: 'Tier 1',
         desc: 'High conviction — stronger fundamentals & traction',
-        ids: ['variational', 'nado'],
+        ids: ['variational', 'nado', 'o1exchange'],
       },
       {
         id: 't2',
         label: 'Tier 2',
         desc: 'Solid projects with good risk/reward',
-        ids: ['ethereal', 'extended', 'grvt', 'o1exchange'],
+        ids: ['ethereal', 'extended'],
       },
       {
         id: 't3',
         label: 'Tier 3',
         desc: 'Speculative or cap-reached — monitor only',
-        ids: ['pacifica', 'ostium', 'hibachi'],
+        ids: ['pacifica', 'ostium', 'hibachi', 'grvt'],
       },
       {
         id: 't4',
@@ -2946,14 +2963,19 @@
 
     function closeModal() {
       document.getElementById('perp-modal-overlay').classList.remove('open');
-      // Restore background scroll and jump back to the saved position.
+      const scrollY = _savedScrollY;
+      // Temporarily disable smooth scrolling so the restore is instant
+      // (otherwise html { scroll-behavior: smooth } causes a visible jump).
+      document.documentElement.style.scrollBehavior = 'auto';
       document.body.style.position = '';
       document.body.style.top = '';
       document.body.style.left = '';
       document.body.style.right = '';
       document.body.style.width = '';
       document.body.style.overflow = '';
-      window.scrollTo(0, _savedScrollY);
+      window.scrollTo(0, scrollY);
+      // Re-enable smooth scrolling on the next frame
+      requestAnimationFrame(() => { document.documentElement.style.scrollBehavior = ''; });
       _modalId = null;
     }
 
