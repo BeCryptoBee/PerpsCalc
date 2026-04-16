@@ -1190,7 +1190,7 @@
       font-weight: 800;
       color: var(--accent);
       text-align: right;
-      min-width: 80px;
+      min-width: 60px;
     }
 
     .cfg-foot {
@@ -2372,7 +2372,7 @@
               <th>FDV ($M)</th>
               <th>Alloc (%)</th>
               <th>Points (M)</th>
-              <th style="text-align:right">$ / point preview</th>
+              <th style="text-align:right">$ / point</th>
             </tr>
           </thead>
           <tbody id="cfg-tbody"></tbody>
@@ -3194,7 +3194,7 @@
         const preview = cfgCalcPrice(p.fdv, p.alloc, p.points);
         return `
         <tr>
-          <td>
+          <td style="white-space:nowrap">
             <span class="cfg-proto-name">${p.name}</span>
             <span class="cfg-tier-tag ${tagClass}">${tierLbl}</span>
           </td>
@@ -3305,7 +3305,23 @@
     }
 
     function hardResetConfig() {
-      if (!confirm('Reset ALL defaults back to the original coded values?')) return;
+      // Temporarily restore scroll so the native confirm dialog renders cleanly
+      const scrollY = _cfgSavedScrollY;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, scrollY);
+      if (!confirm('Reset ALL defaults back to the original coded values?')) {
+        // Re-lock if cancelled
+        _cfgSavedScrollY = window.scrollY || 0;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${_cfgSavedScrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+        return;
+      }
       try { localStorage.removeItem('perps-cfg'); } catch (e) { }
       location.reload();
     }
