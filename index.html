@@ -304,6 +304,7 @@
     }
     .perp-row.launched-row {
       margin-bottom: 0;
+      position: relative;
     }
     .perp-row.launched-row .perp-main {
       cursor: pointer;
@@ -334,6 +335,15 @@
       letter-spacing: 0.5px;
       opacity: 0.7;
       text-decoration: none;
+      position: relative;
+    }
+    /* Stretch <a> to cover the entire card on desktop */
+    .perp-row.launched-row .launched-label::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      /* expand to fill the row */
+      top: -200px; bottom: -200px; left: -200px; right: -200px;
     }
     .perp-row.launched-row:hover .launched-label {
       opacity: 1;
@@ -1097,7 +1107,11 @@
     .cfg-table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
     }
+    .cfg-table col.col-proto { width: 25%; }
+    .cfg-table col.col-val   { width: 18%; }
+    .cfg-table col.col-price { width: 15%; }
 
     .cfg-table thead tr {
       border-bottom: 1px solid var(--border-acc);
@@ -1601,18 +1615,18 @@
       .perp-row.launched-row .proto-stage {
         text-align: left !important;
       }
-      .perp-row.launched-row {
-        pointer-events: none !important;
-        cursor: default !important;
+      .perp-row.launched-row .launched-label::after {
+        display: none !important;
       }
       .perp-row.launched-row .launched-label {
         margin-left: auto !important;
         margin-top: 0 !important;
         opacity: 1 !important;
         white-space: nowrap !important;
-        padding-left: 12px !important;
-        pointer-events: auto !important;
-        cursor: pointer !important;
+        padding: 6px 14px !important;
+        border: 1px solid var(--tier4) !important;
+        border-radius: 8px !important;
+        font-size: 12px !important;
       }
     }
 
@@ -2373,6 +2387,13 @@
         <div class="cfg-note">Edit the default values for each protocol. Click <b>Apply & Save</b> to persist to
           localStorage — they will reload automatically next time.</div>
         <table class="cfg-table">
+          <colgroup>
+            <col class="col-proto">
+            <col class="col-val">
+            <col class="col-val">
+            <col class="col-val">
+            <col class="col-price">
+          </colgroup>
           <thead>
             <tr>
               <th>Protocol</th>
@@ -2802,10 +2823,8 @@
       const logoB64 = LOGO_B64[id];
       const logoSrc = logoB64 || p.logo;
       return `
-  <div class="perp-row launched-row ${tierClass(tid)}" id="row-${id}"
-    onclick="window.open('${p.link}', '_blank')"
-    style="cursor:pointer">
-    <div class="perp-main" style="pointer-events:none">
+  <div class="perp-row launched-row ${tierClass(tid)}" id="row-${id}">
+    <div class="perp-main">
       <div class="proto-info">
         <div class="proto-logo" id="logo-${id}">
           <img src="${logoSrc}" alt="${p.name}"
@@ -2818,8 +2837,7 @@
           <div class="proto-stage">${p.stage}</div>
         </div>
       </div>
-      <a class="launched-label" href="${p.link}" target="_blank"
-         onclick="event.stopPropagation()" style="pointer-events:auto">Open link →</a>
+      <a class="launched-label" href="${p.link}" target="_blank">Open link →</a>
     </div>
   </div>`;
     }
@@ -3313,21 +3331,11 @@
     }
 
     function hardResetConfig() {
-      // Temporarily restore scroll so the native confirm dialog renders cleanly
-      const scrollY = _cfgSavedScrollY;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.overflow = '';
-      window.scrollTo(0, scrollY);
+      // Close the config modal fully before showing the confirm dialog
+      closeConfig();
       if (!confirm('Reset ALL defaults back to the original coded values?')) {
-        // Re-lock if cancelled
-        _cfgSavedScrollY = window.scrollY || 0;
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${_cfgSavedScrollY}px`;
-        document.body.style.left = '0';
-        document.body.style.right = '0';
-        document.body.style.width = '100%';
-        document.body.style.overflow = 'hidden';
+        // Re-open if cancelled
+        openConfig();
         return;
       }
       try { localStorage.removeItem('perps-cfg'); } catch (e) { }
