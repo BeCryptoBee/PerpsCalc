@@ -2217,22 +2217,30 @@
       color: var(--green);
     }
 
-    .modal-reset-btn {
-      margin-top: 14px;
-      padding: 9px 18px;
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--muted);
-      font-size: 13px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
+    .perp-modal-header-right {
+      display: flex;
+      align-items: center;
+      gap: 44px;
     }
-
+    .modal-reset-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
     .modal-reset-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: rgba(255, 157, 0, 0.06);
     }
 
     /* Watermark for screenshot */
@@ -2242,6 +2250,10 @@
       color: #b8bfcc;
       margin-top: 14px;
       opacity: 0.7;
+      line-height: 1;
+    }
+    .modal-watermark svg {
+      vertical-align: middle;
     }
 
     /* Responsive modal */
@@ -2305,7 +2317,10 @@
             <div class="perp-modal-stage" id="modal-stage"></div>
           </div>
         </div>
-        <button class="perp-modal-close" onclick="closeModal()">&times;</button>
+        <div class="perp-modal-header-right">
+          <button class="modal-reset-btn" onclick="resetModalPerp()" title="Reset to default">↺</button>
+          <button class="perp-modal-close" onclick="closeModal()">&times;</button>
+        </div>
       </div>
       <div class="perp-modal-body">
         <!-- Left: Sliders (inline: label + range + input) -->
@@ -2343,13 +2358,10 @@
           </div>
 
           <div class="modal-your-points">
-            <div class="modal-slider-label">ENTER Your Points</div>
-            <input type="text" id="m-ypts" inputmode="numeric" placeholder="Enter amount..."
+            <input type="text" id="m-ypts" inputmode="numeric" placeholder="ENTER Your Points..."
               oninput="onModalYourPts(this.value)"
               onblur="onModalYourPtsBlur()" />
           </div>
-
-          <button class="modal-reset-btn" onclick="resetModalPerp()">&#8634; Reset to default</button>
 
           <!-- Bottom info: time remaining + conditions (in left panel) -->
           <div class="modal-bottom-info" style="margin-top:20px; padding-top:18px; border-top:1px solid var(--border);">
@@ -2386,7 +2398,7 @@
               </div>
               <span class="modal-est-val" id="modal-est-val">$0</span>
             </div>
-            <div class="modal-watermark">Perps Point Cost Calculator &bull; <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;display:inline"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Be_CryptoBee &bull; <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-2px;display:inline"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> BeCryptoBee</div>
+            <div class="modal-watermark">Perps Point Cost Calculator &bull; <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Be_CryptoBee &bull; <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:inline"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg> BeCryptoBee</div>
           </div>
           <button class="modal-share-btn" id="modal-share-btn" onclick="shareModalAsImage()">
             &#128203; Copy as Image
