@@ -757,15 +757,18 @@
       /* Keep left edge aligned with the Protocol header */
     }
 
-    .proto-info.has-link {
+    .proto-link {
+      font-size: 11px;
+      color: var(--accent);
+      margin-top: 2px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-decoration: none;
       cursor: pointer;
+      display: inline-block;
     }
-
-    .proto-info.has-link:hover {
-      background: rgba(255, 255, 255, 0.04);
-      box-shadow: 0 0 20px 5px rgba(245, 197, 24, 0.08);
-      /* Soft blurred glow */
-      transform: translateY(-1.5px);
+    .proto-link:hover {
+      text-decoration: underline;
     }
 
     /* ─── EXPAND BUTTON ─── */
@@ -2753,7 +2756,7 @@
   <div class="perp-row ${tc}" id="row-${id}">
     <div class="perp-main" onclick="toggleDetails('${id}')">
 
-      <div class="proto-info ${p.link ? 'has-link' : ''}" ${p.link ? `onclick="event.stopPropagation(); window.open('${p.link}', '_blank')"` : ''}>
+      <div class="proto-info">
         <div class="proto-logo" id="logo-${id}">
           <img src="${p.logo}" alt="${p.name}"
             onerror="this.parentElement.innerHTML='${p.fb}'" />
@@ -2763,7 +2766,7 @@
             ${p.name}<span class="status-badge ${stClass(s.status || p.status)}">${(s.statusLabel || p.statusLabel).replace('Final Stretch', 'TGE Soon')}</span>
           </div>
           <div class="proto-stage">${p.stage}</div>
-          ${p.link ? `<div class="proto-link" style="font-size: 11px; color: var(--accent); margin-top: 2px; font-weight: 700; letter-spacing: 0.5px;">LINK</div>` : ''}
+          ${p.link ? `<a class="proto-link" href="${p.link}" target="_blank" onclick="event.stopPropagation()">LINK</a>` : ''}
         </div>
       </div>
 
@@ -3510,7 +3513,7 @@
       const isTouch = window.matchMedia && window.matchMedia('(hover: none)').matches;
       if (isTouch) return;
       // Link tooltips on proto-info (with or without linkText)
-      document.querySelectorAll('.proto-info.has-link').forEach(el => {
+      document.querySelectorAll('.proto-link').forEach(el => {
         const row = el.closest('[id^="row-"]');
         if (!row) return;
         const id = row.id.replace('row-', '');
