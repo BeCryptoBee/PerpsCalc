@@ -1109,9 +1109,9 @@
       border-collapse: collapse;
       table-layout: fixed;
     }
-    .cfg-table col.col-proto { width: 25%; }
-    .cfg-table col.col-val   { width: 18%; }
-    .cfg-table col.col-price { width: 15%; }
+    .cfg-table col.col-proto { width: 28%; }
+    .cfg-table col.col-val   { width: 17%; }
+    .cfg-table col.col-price { width: 14%; }
 
     .cfg-table thead tr {
       border-bottom: 1px solid var(--border-acc);
@@ -1263,6 +1263,61 @@
       opacity: 1;
     }
 
+    /* ─── CUSTOM CONFIRM ─── */
+    .confirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+    }
+    .confirm-overlay.open { display: flex; }
+    .confirm-box {
+      background: #1a1e2a;
+      border: 1px solid var(--border-acc);
+      border-radius: 16px;
+      padding: 28px 32px;
+      max-width: 380px;
+      width: calc(100vw - 40px);
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    }
+    .confirm-msg {
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .confirm-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .confirm-ok {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 28px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .confirm-cancel {
+      background: var(--bg-input);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 28px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .confirm-cancel:hover { border-color: var(--red); color: var(--red); }
+
     @media (max-width: 768px) {
 
       /* Mobile Global overrides */
@@ -1362,11 +1417,12 @@
         padding: 3px 5px !important;
       }
 
+      .cfg-table { table-layout: auto !important; }
+
       .cfg-proto-name {
-        display: flex !important;
-        align-items: center !important;
+        display: inline !important;
         white-space: nowrap !important;
-        font-size: 12px !important;
+        font-size: 11px !important;
       }
 
       .cfg-table th,
@@ -2414,6 +2470,17 @@
     </div>
   </div>
 
+  <!-- CONFIRM DIALOG -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <div class="confirm-msg" id="confirm-msg"></div>
+      <div class="confirm-btns">
+        <button class="confirm-ok" id="confirm-ok">OK</button>
+        <button class="confirm-cancel" id="confirm-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ─── DATA ────────────────────────────────────────────────────────────────
     const TIERS = [
@@ -3330,14 +3397,29 @@
       }, 700);
     }
 
-    function hardResetConfig() {
-      // Close the config modal fully before showing the confirm dialog
-      closeConfig();
-      if (!confirm('Reset ALL defaults back to the original coded values?')) {
-        // Re-open if cancelled
-        openConfig();
-        return;
-      }
+    function showConfirm(msg) {
+      return new Promise(resolve => {
+        const overlay = document.getElementById('confirm-overlay');
+        document.getElementById('confirm-msg').textContent = msg;
+        overlay.classList.add('open');
+        const ok = document.getElementById('confirm-ok');
+        const cancel = document.getElementById('confirm-cancel');
+        function cleanup(result) {
+          overlay.classList.remove('open');
+          ok.removeEventListener('click', onOk);
+          cancel.removeEventListener('click', onCancel);
+          resolve(result);
+        }
+        function onOk() { cleanup(true); }
+        function onCancel() { cleanup(false); }
+        ok.addEventListener('click', onOk);
+        cancel.addEventListener('click', onCancel);
+      });
+    }
+
+    async function hardResetConfig() {
+      const yes = await showConfirm('Reset ALL defaults back to the original coded values?');
+      if (!yes) return;
       try { localStorage.removeItem('perps-cfg'); } catch (e) { }
       location.reload();
     }
