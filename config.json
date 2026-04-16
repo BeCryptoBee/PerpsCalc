@@ -1,7 +1,7 @@
 [
     {
         "id": "variational",
-        "fdv": 300,
+        "fdv": 200,
         "alloc": 20,
         "points": 9.5,
         "status": "active",
@@ -26,7 +26,7 @@
     },
     {
         "id": "ethereal",
-        "fdv": 150,
+        "fdv": 50,
         "alloc": 15,
         "points": 10000,
         "status": "active",
@@ -39,7 +39,7 @@
     },
     {
         "id": "extended",
-        "fdv": 200,
+        "fdv": 150,
         "alloc": 25,
         "points": 50,
         "status": "active",
@@ -55,7 +55,7 @@
     },
     {
         "id": "o1exchange",
-        "fdv": 75,
+        "fdv": 50,
         "alloc": 10,
         "points": 10,
         "status": "active",
