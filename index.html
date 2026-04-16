@@ -333,6 +333,7 @@
       font-weight: 600;
       letter-spacing: 0.5px;
       opacity: 0.7;
+      text-decoration: none;
     }
     .perp-row.launched-row:hover .launched-label {
       opacity: 1;
@@ -1600,12 +1601,18 @@
       .perp-row.launched-row .proto-stage {
         text-align: left !important;
       }
+      .perp-row.launched-row {
+        pointer-events: none !important;
+        cursor: default !important;
+      }
       .perp-row.launched-row .launched-label {
         margin-left: auto !important;
         margin-top: 0 !important;
         opacity: 1 !important;
         white-space: nowrap !important;
         padding-left: 12px !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
       }
     }
 
@@ -2392,13 +2399,13 @@
       {
         id: 't1',
         label: 'Tier 1',
-        desc: 'High conviction — stronger fundamentals & traction',
+        desc: 'Just my choice for now with good risk/reward',
         ids: ['variational', 'nado', 'o1exchange'],
       },
       {
         id: 't2',
         label: 'Tier 2',
-        desc: 'Solid projects with good risk/reward',
+        desc: 'Potentially a good option for farming',
         ids: ['ethereal', 'extended'],
       },
       {
@@ -2811,7 +2818,8 @@
           <div class="proto-stage">${p.stage}</div>
         </div>
       </div>
-      <div class="launched-label">Open link →</div>
+      <a class="launched-label" href="${p.link}" target="_blank"
+         onclick="event.stopPropagation()" style="pointer-events:auto">Open link →</a>
     </div>
   </div>`;
     }
