@@ -771,6 +771,10 @@
       margin-top: 2px;
       font-weight: 700;
       letter-spacing: 0.5px;
+      text-decoration: none;
+    }
+    .proto-link:hover {
+      text-decoration: underline;
     }
 
     /* ─── EXPAND BUTTON ─── */
@@ -1496,10 +1500,12 @@
         padding-right: 96px !important;
       }
       .proto-info.has-link {
-        width: auto !important;
-        align-self: flex-start !important;
-        border-radius: 10px !important;
-        padding: 6px 10px !important;
+        pointer-events: none !important;
+        cursor: default !important;
+      }
+      .proto-info.has-link .proto-link {
+        pointer-events: auto !important;
+        cursor: pointer !important;
       }
 
       .proto-name {
@@ -2772,7 +2778,7 @@
             ${p.name}<span class="status-badge ${stClass(s.status || p.status)}">${(s.statusLabel || p.statusLabel).replace('Final Stretch', 'TGE Soon')}</span>
           </div>
           <div class="proto-stage">${p.stage}</div>
-          ${p.link ? `<div class="proto-link">LINK</div>` : ''}
+          ${p.link ? `<a class="proto-link" href="${p.link}" target="_blank" onclick="event.stopPropagation()">LINK</a>` : ''}
         </div>
       </div>
 
